@@ -7,9 +7,10 @@ export const Document: React.FC<{ children: React.ReactNode }> = ({
 }) => (
   <html lang="en">
     <head>
+      {/* La inn et forslag på title */}
+      <title>GiBortEpler</title>
       <meta charSet="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <title>Webapplikasjoner 2026</title>
       <link rel="modulepreload" href="/src/client.tsx" />
       <link rel="stylesheet" href={styles} />
     </head>
