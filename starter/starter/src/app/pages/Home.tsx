@@ -9,7 +9,7 @@ interface Listing {
   id: number;
   title: string;
   category: string;
-  price: number;
+  amount: string;
   location: string;
   imageUrl?: string;
 }
@@ -24,15 +24,15 @@ export function Home() {
       id: 1,
       title: "Rød Aroma Epletre",
       category: "Epler",
-      price: 0,
+      amount: "Selvplukk / ca. 10 kg",
       location: "Halden",
-      imageUrl: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=600&q=80",
+      imageUrl: "https://placehold.co/400",
     },
     {
       id: 2,
       title: "Økologisk Plommehage",
       category: "Plommer",
-      price: 30,
+      amount: "3 poser ferdig plukket",
       location: "Tistedal",
     },
   ]);
@@ -40,7 +40,7 @@ export function Home() {
   const handleAddListing = (newListing: {
     title: string;
     category: string;
-    price: number;
+    amount: string;
     location: string;
     imageUrl?: string;
   }) => {
@@ -58,7 +58,7 @@ export function Home() {
             onClick={() => setShowLogin(false)}
             className="text-sm font-medium text-slate-600 hover:text-slate-900"
           >
-            ← Tilbake til marten
+            ← Tilbake til markedet
           </button>
         </nav>
         <Login
@@ -76,16 +76,16 @@ export function Home() {
       <header className="mb-10 flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-center sm:justify-between">
         <section>
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
-            Farmers Market 🍎
+            Nabo Hagen 🍎
           </h1>
           <p className="mt-1 text-sm text-slate-600">
-            Redd råvarer fra å gå til spille! Finn frukt og grønt fra hager nær deg.
+            Redd råvarer fra å gå til spille! Finn gratis frukt og grønt fra hager nær deg.
           </p>
         </section>
 
         <nav>
           {user ? (
-            <p className="flex items-center gap-3 rounded-full bg-slate-100 px-4 py-2">
+            <p className="flex items-center gap-3 rounded-md bg-slate-100 px-4 py-2">
               <span className="text-sm font-medium text-slate-700">Hei, {user}!</span>
               <button
                 onClick={() => setUser(null)}
@@ -97,7 +97,7 @@ export function Home() {
           ) : (
             <button
               onClick={() => setShowLogin(true)}
-              className="rounded-xl border border-slate-300 px-5 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+              className="rounded-md border border-slate-300 px-5 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
             >
               Logg inn
             </button>
@@ -112,7 +112,7 @@ export function Home() {
           {user && (
             <button
               onClick={() => setIsModalOpen(true)}
-              className="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
+              className="rounded-md bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
             >
               + Del fra hagen
             </button>
@@ -125,7 +125,7 @@ export function Home() {
               key={item.id}
               title={item.title}
               category={item.category}
-              price={item.price}
+              amount={item.amount}
               location={item.location}
               imageUrl={item.imageUrl}
             />

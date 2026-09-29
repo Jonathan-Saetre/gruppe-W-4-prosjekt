@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { CreateListingModal } from "../CreateListingModal";
@@ -26,6 +27,7 @@ describe("CreateListingModal", () => {
 
     expect(screen.getByText("Del fra hagen din 🌿")).toBeInTheDocument();
     expect(screen.getByLabelText("Hva tilbyr du?")).toBeInTheDocument();
+    expect(screen.getByLabelText("Mengde / Antall")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Legg ut i nabolaget" })).toBeInTheDocument();
   });
 
@@ -44,6 +46,9 @@ describe("CreateListingModal", () => {
     fireEvent.change(screen.getByLabelText("Hva tilbyr du?"), {
       target: { value: "Søte Moreller" },
     });
+    fireEvent.change(screen.getByLabelText("Mengde / Antall"), {
+      target: { value: "2 kg" },
+    });
     fireEvent.change(screen.getByLabelText("Hvor i landet?"), {
       target: { value: "Halden" },
     });
@@ -54,7 +59,7 @@ describe("CreateListingModal", () => {
     expect(handleAddListing).toHaveBeenCalledWith({
       title: "Søte Moreller",
       category: "Epler",
-      price: 0,
+      amount: "2 kg",
       location: "Halden",
       imageUrl: undefined,
     });

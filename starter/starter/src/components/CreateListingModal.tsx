@@ -5,13 +5,13 @@ import { useState } from "react";
 interface CreateListingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddListing: (listing: { title: string; category: string; price: number; location: string; imageUrl?: string }) => void;
+  onAddListing: (listing: { title: string; category: string; amount: string; location: string; imageUrl?: string }) => void;
 }
 
 export function CreateListingModal({ isOpen, onClose, onAddListing }: CreateListingModalProps) {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Epler");
-  const [price, setPrice] = useState(0);
+  const [amount, setAmount] = useState("");
   const [location, setLocation] = useState("");
   const [imageUrl, setImageUrl] = useState("");
 
@@ -33,11 +33,12 @@ export function CreateListingModal({ isOpen, onClose, onAddListing }: CreateList
     onAddListing({ 
       title, 
       category, 
-      price: Number(price), 
+      amount, 
       location, 
       imageUrl: imageUrl || undefined 
     });
     setTitle("");
+    setAmount("");
     setLocation("");
     setImageUrl("");
     onClose();
@@ -49,7 +50,7 @@ export function CreateListingModal({ isOpen, onClose, onAddListing }: CreateList
         <header className="mb-4">
           <h2 className="text-2xl font-bold text-slate-800">Del fra hagen din 🌿</h2>
           <p className="mt-1 text-sm text-slate-500">
-            Har du mer frukt eller grønt enn du rekker å spise? Gi naboene dine beskjed!
+            Har du mer frukt eller grønt enn du rekker å spise? Gi det bort til naboene dine!
           </p>
         </header>
 
@@ -83,13 +84,14 @@ export function CreateListingModal({ isOpen, onClose, onAddListing }: CreateList
           </p>
 
           <p>
-            <label htmlFor="price" className="block text-sm font-medium text-slate-700">Pris i kr (sett 0 for gratis selvplukk)</label>
+            <label htmlFor="amount" className="block text-sm font-medium text-slate-700">Mengde / Antall</label>
             <input
-              id="price"
-              type="number"
-              min="0"
-              value={price}
-              onChange={(e) => setPrice(Number(e.target.value))}
+              id="amount"
+              type="text"
+              required
+              placeholder="f.eks. ca. 5 kg, 2 fulle poser, eller selvplukk"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
               className="mt-1 w-full rounded-lg border border-slate-300 p-2.5 text-sm focus:border-emerald-600 focus:outline-none"
             />
           </p>
