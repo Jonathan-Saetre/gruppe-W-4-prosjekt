@@ -6,14 +6,17 @@
 // startet. Da slipper dere å lure på om feilen ligger i dataene.
 import { defineScript } from "rwsdk/worker";
 import { drizzle } from "drizzle-orm/d1";
-import { users, tasks } from "./schema";
+import { users, tasks, produce } from "./schema";
+
 
 export const seedData = async (env: Env) => {
   const db = drizzle(env.DB);
 
   // Tøm først, så seed kan kjøres om igjen uten å doble alt.
   await db.delete(tasks);
+  await db.delete(produce);
   await db.delete(users);
+  
 
   // Brukerne må inn før oppgavene: fremmednøkkelen krever at brukeren finnes.
   // Databasen nekter hvis dere tar rekkefølgen feil, og det er en god ting.
@@ -34,6 +37,27 @@ export const seedData = async (env: Env) => {
       completed: false,
       userId: user.id,
       dueDate: new Date(Date.now() + 86_400_000),
+    },
+  ]);
+
+  await db.insert(produce).values([
+    {
+      title: "Epler - Gis Bort",
+      category: "frukt",
+      amount: 3,
+      unit: "poser",
+      pickupLocation: "Tistedal Skole, Tistedal",
+      pickupDeadline: new Date(Date.now() + 86_400_000), 
+      userId: user.id,
+    },
+    {
+      title: "Tomater - Gis Bort",
+      category: "grønnsaker",
+      amount: 2,
+      unit: "kg", 
+      pickupLocation: "Extra Brødløs",
+      pickupDeadline: new Date(Date.now() + 86_400_000),
+      userId: user.id,
     },
   ]);
 
