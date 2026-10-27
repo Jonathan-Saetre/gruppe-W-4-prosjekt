@@ -6,7 +6,7 @@ CREATE TABLE `produce` (
 	`pickup_location` text NOT NULL,
 	`amount` real NOT NULL,
 	`pickup_deadline` integer NOT NULL,
-	`pickedUp` integer DEFAULT false NOT NULL,
+	`picked_up` integer DEFAULT false NOT NULL,
 	`unit` text NOT NULL,
 	`user_id` integer NOT NULL,
 	`created_at` integer NOT NULL,

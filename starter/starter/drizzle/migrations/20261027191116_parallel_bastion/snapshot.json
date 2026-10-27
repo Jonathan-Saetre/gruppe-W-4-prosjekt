@@ -1,9 +1,9 @@
 {
   "version": "7",
   "dialect": "sqlite",
-  "id": "14714359-1515-42d6-8ec2-586c28863e9f",
+  "id": "0109e57f-e400-4557-914b-90505fed050c",
   "prevIds": [
-    "f7860130-dcbb-4512-acd2-8b1293fef8c0"
+    "e361922e-dc49-44f5-9019-38bb74a4c396"
   ],
   "ddl": [
     {
@@ -45,6 +45,26 @@
       "default": null,
       "generated": null,
       "name": "email",
+      "entityType": "columns",
+      "table": "users"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "password_hash",
+      "entityType": "columns",
+      "table": "users"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "created_at",
       "entityType": "columns",
       "table": "users"
     },
@@ -184,7 +204,7 @@
       "autoincrement": false,
       "default": "false",
       "generated": null,
-      "name": "pickedUp",
+      "name": "picked_up",
       "entityType": "columns",
       "table": "produce"
     },

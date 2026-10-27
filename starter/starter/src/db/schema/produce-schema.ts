@@ -15,7 +15,7 @@ export const produce = sqliteTable(
     pickupLocation: text("pickup_location").notNull(),
     amount: real("amount").notNull(),
     pickupDeadline: integer("pickup_deadline", { mode: "timestamp" }).notNull(),
-    pickedUp: integer("pickedUp", { mode: "boolean" }).notNull().default(false),
+    pickedUp: integer("picked_up", { mode: "boolean" }).notNull().default(false),
     unit: text("unit", { enum: ["kg", "stk", "poser"]}).notNull(),
     userId: integer("user_id")
       .notNull()
