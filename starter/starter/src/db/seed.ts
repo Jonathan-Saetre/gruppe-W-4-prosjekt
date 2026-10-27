@@ -7,7 +7,13 @@
 import { defineScript } from "rwsdk/worker";
 import { drizzle } from "drizzle-orm/d1";
 import { users, tasks, produce } from "./schema";
+import { hashPassword } from "@/lib/password";
 
+
+
+// Passordet til testbrukeren. Kort nok til å huske, langt nok til å
+// passere minLength={8} i Register.tsx.
+const TEST_PASSWORD = "test1234";
 
 export const seedData = async (env: Env) => {
   const db = drizzle(env.DB);
@@ -16,13 +22,20 @@ export const seedData = async (env: Env) => {
   await db.delete(tasks);
   await db.delete(produce);
   await db.delete(users);
-  
+
+  // Hashen tar ~100 ms med 100k PBKDF2-runder. Greit i en seed, men det er
+  // derfor hashPassword er async og ikke noe vi gjør i render.
+  const passwordHash = await hashPassword(TEST_PASSWORD);
 
   // Brukerne må inn før oppgavene: fremmednøkkelen krever at brukeren finnes.
   // Databasen nekter hvis dere tar rekkefølgen feil, og det er en god ting.
   const [user] = await db
     .insert(users)
-    .values({ name: "Test Testesen", email: "test@example.com" })
+    .values({
+      name: "Test Testesen",
+      email: "test@example.com",
+      passwordHash,
+    })
     .returning();
 
   await db.insert(tasks).values([
@@ -62,6 +75,7 @@ export const seedData = async (env: Env) => {
   ]);
 
   console.log("Seeding ferdig");
+  console.log(`  Logg inn med ${user.email} / ${TEST_PASSWORD}`);
 };
 
 export default defineScript(async ({ env }) => {
