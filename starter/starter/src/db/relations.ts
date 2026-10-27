@@ -13,11 +13,19 @@ export const relations = defineRelations(schema, (r) => ({
   users: {
     // En bruker har mange oppgaver.
     tasks: r.many.tasks({ from: r.users.id, to: r.tasks.userId }),
+    produce: r.many.produce({ from: r.users.id, to: r.produce.userId }),
   },
   tasks: {
     // En oppgave har én bruker. `optional: false` gjør den ikke-nullbar i typen.
     user: r.one.users({
       from: r.tasks.userId,
+      to: r.users.id,
+      optional: false,
+    }),
+  },
+    produce: {
+    user: r.one.users({
+      from: r.produce.userId,
       to: r.users.id,
       optional: false,
     }),
