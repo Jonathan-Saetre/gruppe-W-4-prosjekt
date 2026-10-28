@@ -1,0 +1,50 @@
+import { eq, desc } from "drizzle-orm";
+import { db, type DB } from "@/db";
+import {
+    produce, 
+    type Produce,
+    type CreateProduce,
+    type UpdateProduce,
+} from "@/db/schema";
+
+
+
+export interface ProduceRepository {
+    findMany(): Promise<Produce[]>;
+    findById(id: string): Promise<Produce | null>;
+    create(data: CreateProduce): Promise<Produce>;
+    update(id: string, data: UpdateProduce): Promise<Produce | null>;
+    remove(id: string): Promise<void>;
+}
+
+export function createProduceRepository(_db: DB): ProduceRepository {
+    return {
+        async findMany() {
+            
+            return await _db.select().from(produce).orderBy(desc(produce.createdAt))
+        },
+
+        
+        async findById(id) {
+ 
+                const [row] = await _db.select().from(produce).where(eq(produce.id, id))
+        
+            return  row ?? null;
+        },
+
+        async create(data) {
+            throw new Error("Not implemented");
+        },
+
+        async update(id, data) {
+           throw new Error("Not implemented");
+        },
+
+        async remove(id) {
+            throw new Error("Not implemented");
+        },
+
+    };
+}
+
+export const produceRepository = createProduceRepository(db);
