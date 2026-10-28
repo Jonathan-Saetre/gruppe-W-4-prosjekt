@@ -6,13 +6,28 @@ import { env } from "cloudflare:workers";
 import { drizzle } from "drizzle-orm/d1";
 import { eq } from "drizzle-orm";
 import { users } from "@/db/schema";
-import { hashPassword, verifyPassword, needsRehash } from "@/lib/password";
+import {
+  PASSWORD_MAX_BYTES,
+  PASSWORD_MIN_LENGTH,
+  hashPassword,
+  isPasswordTooLong,
+  needsRehash,
+  verifyPassword,
+} from "@/lib/password";
 import { sessionStore } from "@/lib/session";
 
 const registerSchema = z.object({
   name: z.string().min(1, "Navn er påkrevd"),
   email: z.string().email("Ugyldig e-post"),
-  password: z.string().min(8, "Passord må være minst 8 tegn"),
+  password: z
+    .string()
+    .min(PASSWORD_MIN_LENGTH, `Passord må være minst ${PASSWORD_MIN_LENGTH} tegn`)
+    // bcrypt only uses the first 72 bytes, so reject longer passwords
+    // instead of silently ignoring the rest.
+    .refine(
+      (value) => !isPasswordTooLong(value),
+      `Passord kan ikke være lengre enn ${PASSWORD_MAX_BYTES} byte`,
+    ),
 });
 
 const loginSchema = z.object({
@@ -21,6 +36,14 @@ const loginSchema = z.object({
 });
 
 const GENERIC_ERROR = "Feil e-post eller passord";
+
+// A hash of a throwaway password, made once per isolate on first use. When
+// the email doesn't exist we still run a bcrypt compare against it, so a
+// missing user takes as long as a wrong password and response time doesn't
+// reveal which emails are registered. (bcrypt is slow enough to make that
+// difference easy to measure otherwise.)
+let dummyHash: Promise<string> | undefined;
+const getDummyHash = () => (dummyHash ??= hashPassword("ikke-et-ekte-passord"));
 
 export type AuthState = { error: string } | { ok: true } | null;
 
@@ -80,7 +103,12 @@ export async function loginAction(
     .where(eq(users.email, email))
     .limit(1);
 
-  if (!user || !(await verifyPassword(parsed.data.password, user.passwordHash))) {
+  if (!user) {
+    await verifyPassword(parsed.data.password, await getDummyHash());
+    return { error: GENERIC_ERROR };
+  }
+
+  if (!(await verifyPassword(parsed.data.password, user.passwordHash))) {
     return { error: GENERIC_ERROR };
   }
 
