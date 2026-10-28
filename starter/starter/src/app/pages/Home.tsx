@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ListingCard } from "@/components/ListingCard";
+import { ProduceCard } from "@/components/ProduceCard";
 import { CreateListingModal } from "@/components/CreateListingModal";
 import { logoutAction } from "@/lib/auth-actions";
 
@@ -110,7 +110,7 @@ export function Home({ ctx }: HomeProps) {
 
         <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
           {listings.map((item) => (
-            <ListingCard
+            <ProduceCard
               key={item.id}
               title={item.title}
               category={item.category}

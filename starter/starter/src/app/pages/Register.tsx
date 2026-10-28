@@ -72,6 +72,7 @@ export function Register() {
               type="password"
               required
               minLength={8}
+              maxLength={72}
               autoComplete="new-password"
               className="mt-1 w-full rounded-md border border-slate-300 p-2.5 text-sm focus:border-emerald-600 focus:outline-none"
             />

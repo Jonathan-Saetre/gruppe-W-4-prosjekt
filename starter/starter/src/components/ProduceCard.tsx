@@ -1,4 +1,4 @@
-interface ListingCardProps {
+interface ProduceCardProps {
   title: string;
   category: string;
   price: number;
@@ -6,13 +6,13 @@ interface ListingCardProps {
   imageUrl?: string;
 }
 
-export function ListingCard({
+export function ProduceCard({
   title,
   category,
   price,
   location,
   imageUrl,
-}: ListingCardProps) {
+}: ProduceCardProps) {
   return (
     <article className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
       <figure className="relative h-44 w-full bg-slate-100">
