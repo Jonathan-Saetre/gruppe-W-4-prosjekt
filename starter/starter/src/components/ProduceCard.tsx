@@ -1,13 +1,5 @@
 import { Produce } from "@/db/schema";
 
-interface ProduceCardProps {
-  title: string;
-  category: string;
-  amount: string;
-  location: string;
-  imageUrl?: string;
-}
-
 export function ProduceCard({produce}: {produce: Produce}) {
   const {imageKey, title, category, amount, pickupLocation, pickupDeadline} = produce
 

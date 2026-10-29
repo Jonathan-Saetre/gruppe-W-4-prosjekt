@@ -1,7 +1,3 @@
-import { service } from "@/app/features/produce-service";
-import { Params, parseParams } from "@/app/features/utils/parse-params";
-import { requestInfo } from "rwsdk/worker";
-import { ProduceList } from "./ProduceList";
 export default async function Search(){
     return(
     <form method="GET" className="flex flex-wrap items-center gap-3 py-4">

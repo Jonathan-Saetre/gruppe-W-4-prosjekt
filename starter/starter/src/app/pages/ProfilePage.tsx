@@ -2,18 +2,25 @@ import { logoutAction, type AuthState} from "@/lib/auth-actions";
 import { useActionState } from "react";
 
 import ProduceEdit from "./produce/ProduceEditPage";
+import { requestInfo } from "rwsdk/worker";
 
-export default async function Profile(){
-    //const {ctx, request} = requestInfo
-//kanskje gir error
-    function onDelete(id: string){
-    console.log("deleted", id)
+
+interface Props {
+ctx: {
+    user: { id: number; name: string; email: string } | null;
+  }; 
 }
+export default function Profile({ctx}: Props ){
+    const user = ctx.user
+//  //kanskje gir error
+//     function onDelete(id: string){
+//     console.log("deleted", id)
+// }
 const [state, formAction, pending] = useActionState<AuthState, FormData>(
     logoutAction,
     null,
 );
-    return(
+return(
     <main>
         <h1>Profile</h1>
         <p>{ctx.user?.name}</p>
@@ -30,9 +37,9 @@ const [state, formAction, pending] = useActionState<AuthState, FormData>(
             </article>
         </li>
     </ol>
-    <ProduceEdit onDelete={onDelete}/>
+    <ProduceEdit/>
     {/* Denne skal jeg endre på vi trenger et resultat fil */}
     {state && "error" in state && (<p>{state.error}</p>)}
     </main>
-    )
+  )
 }

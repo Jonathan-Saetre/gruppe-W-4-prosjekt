@@ -1,66 +1,55 @@
-"use client";
 
 import { useState } from "react";
 import { ProduceCard } from "@/components/ProduceCard";
 import { CreateListingModal } from "@/components/CreateListingModal";
 import { logoutAction } from "@/lib/auth-actions";
+import Search from "@/components/SearchBar";
+import { ProduceList } from "@/components/ProduceList";
+import { requestInfo } from "rwsdk/worker";
+import { parseParams } from "@/features/produce/utils/parse-params";
+import { produceService } from "@/features/produce/produce-service";
 
-interface Listing {
-  id: number;
-  title: string;
-  category: string;
-  amount: string;
-  location: string;
-  imageUrl?: string;
-}
+// interface Listing {
+//   id: number;
+//   title: string;
+//   category: string;
+//   amount: string;
+//   location: string;
+//   imageUrl?: string;
+// }
 
-interface HomeProps {
-  ctx: {
-    user: { id: number; name: string; email: string } | null;
-  };
-}
+// interface HomeProps {
+//   ctx: {
+//     user: { id: number; name: string; email: string } | null;
+//   };
+// }
 
-export function Home({ ctx }: HomeProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+export async function Home() {
+  const {ctx, request} = requestInfo
+
+  //const [isModalOpen, setIsModalOpen] = useState(false);
   const user = ctx.user;
-
-  const [listings, setListings] = useState<Listing[]>([
-    {
-      id: 1,
-      title: "Rød Aroma Epletre",
-      category: "Epler",
-      amount: "Selvplukk / ca. 10 kg",
-      location: "Halden",
-      imageUrl: "https://placehold.co/400",
-    },
-    {
-      id: 2,
-      title: "Økologisk Plommehage",
-      category: "Plommer",
-      amount: "3 poser ferdig plukket",
-      location: "Tistedal",
-    },
-  ]);
-
-  const handleAddListing = (newListing: {
-    title: string;
-    category: string;
-    amount: string;
-    location: string;
-    imageUrl?: string;
-  }) => {
-    setListings([...listings, { id: Date.now(), ...newListing }]);
-  };
 
   const handleLogout = async () => {
     await logoutAction();
     window.location.href = "/";
   };
 
+  const params = parseParams(request);
+
+  const result = await produceService.list(params);
+
+  if(!result.ok){
+    return(
+      <p>Klarter ikke å hente inn råvarer: {result.error.message}</p>
+    )
+  }
+
   return (
     <main className="mx-auto max-w-4xl p-8 font-sans">
       <header className="mb-10 flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-center sm:justify-between">
         <section>
+          <Search/>
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
             Nabo Hagen 🍎
           </h1>
@@ -75,8 +64,11 @@ export function Home({ ctx }: HomeProps) {
               <span className="text-sm font-medium text-slate-700">
                 Hei, {user.name}!
               </span>
+              <a href="/profile" aria-label="Sender deg til profilen siden din">
+                👤
+              </a>
               <button
-                onClick={handleLogout}
+                //onClick={handleLogout}
                 className="text-xs font-semibold text-rose-600 hover:underline"
               >
                 Logg ut
@@ -85,7 +77,7 @@ export function Home({ ctx }: HomeProps) {
           ) : (
             <a
               href="/login"
-              className="rounded-md border border-slate-300 px-5 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+              className="rounded-md border bg-[#6B8E23] border-slate-300 px-5 py-2 text-sm font-medium text-[#FCF8E8] transition hover:bg-[#405516]"
             >
               Logg inn
             </a>
@@ -99,33 +91,21 @@ export function Home({ ctx }: HomeProps) {
 
           {user && (
             <button
-              onClick={() => setIsModalOpen(true)}
+              //onClick={() => setIsModalOpen(true)}
               className="rounded-md bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
             >
               + Del fra hagen
             </button>
           )}
         </header>
-
-        <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
-          {listings.map((item) => (
-            <ProduceCard
-              key={item.id}
-              title={item.title}
-              category={item.category}
-              amount={item.amount}
-              location={item.location}
-              imageUrl={item.imageUrl}
-            />
-          ))}
-        </section>
+        <ProduceList produce={result.data}/>
       </section>
 
-      <CreateListingModal
+      {/* <CreateListingModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onAddListing={handleAddListing}
-      />
+      /> */}
     </main>
   );
 }
