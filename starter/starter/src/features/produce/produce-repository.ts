@@ -38,7 +38,9 @@ export function createProduceRepository(_db: DB): ProduceRepository {
         },
 
         async update(id, data) {
-           throw new Error("Not implemented");
+           const [row] = await _db.update(produce).set(data).where(eq(produce.id, id)).returning()
+
+           return row ?? null;
         },
 
         async remove(id) {

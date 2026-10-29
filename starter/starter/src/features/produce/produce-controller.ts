@@ -57,8 +57,40 @@ export function createProduceController(service: ProduceService) {
 
     },
 
-        async update(info: RequestInfo) {
-        return new Response("Not implemented", { status: 501 });
+        async update({request, ctx, params}: RequestInfo) {
+        if (!ctx.user) {
+                return Response.json({
+                    ok: false,
+                    error: {
+                        code: 401,
+                        message: "Du må være logget inn"
+                    } }, 
+                    { status: 401 },
+                );
+        }
+       
+      let body: unknown;
+        try {
+            body = await request.json();
+
+        } catch(error) {
+            console.error(error);
+            return Response.json({
+                ok: false,
+                error: {
+                    code: 400,
+                    message: "Ugyldig JSON"
+                }
+            },
+                { status: 400 });
+
+        }
+      const result = await service.update(params.id, body, ctx.user.id);
+
+        return result.ok
+            ? Response.json(result, { status: 200 })
+            : Response.json(result, { status: result.error.code });
+
     },
 
     async remove(info: RequestInfo) {

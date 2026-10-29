@@ -10,6 +10,6 @@ export const createProduceSchema = z.object({
   pickupDeadline: z.coerce.date(),
 });
 
-export const updateProduceSchema = createProduceSchema.partial();
+export const updateProduceSchema = createProduceSchema.partial().extend({pickedUp: z.boolean().optional(),});
 
 export type CreateProduceInput = z.infer<typeof createProduceSchema>;
