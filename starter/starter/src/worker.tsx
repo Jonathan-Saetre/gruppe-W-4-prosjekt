@@ -12,6 +12,9 @@ import { UserSession } from "@/sessions/UserSession";
 import { users } from "@/db/schema";
 import { sessionStore } from "@/lib/session";
 import { produceRoutes } from "@/features/produce/produce-routes";
+import ProduceDetail from "./app/pages/produce/ProduceDetailPage";
+import Profile from "./app/pages/ProfilePage";
+import ProduceEdit from "./app/pages/produce/ProduceEditPage";
 
 export type AppContext = {
   user: { id: number; name: string; email: string } | null;
@@ -55,6 +58,9 @@ const app = defineApp([
     route("/login", Login),
     route("/register", Register),
     route("/", Home),
+    route("/produce/:id", ProduceDetail),
+    route("/profile", Profile),
+    route("/profile/:id", ProduceEdit)
   ]),
 ]);
 

@@ -6,6 +6,9 @@ import { produceRepository, type ProduceRepository } from "./produce-repository"
 import { toProduceDTO, type ProduceDTO } from "./produce-mapper";
 import { z } from "zod";
 import { createProduceSchema, updateProduceSchema } from "./produce-validation";
+import { Params } from "./utils/parse-params";
+import { ResultParams } from "./Result";
+import { validateListParams } from "./utils/validate-list-params";
 
 type ServiceError = { code: number; message: string; fieldErrors?: Record<string, string[] | undefined>; };
 
@@ -14,7 +17,7 @@ export type Result<T> =
     | { ok: false; error: ServiceError };
 
 export interface ProduceService {
-    list(): Promise<Result<ProduceDTO[]>>;
+    list(params: Params): Promise<ResultParams>;
     find(id: string): Promise<Result<ProduceDTO>>;
     create(input: unknown, userId: number): Promise<Result<ProduceDTO>>;
     update(id: string, input: unknown, userId: number): Promise<Result<ProduceDTO>>;
@@ -24,28 +27,31 @@ export interface ProduceService {
 
 export function createProduceService(repo: ProduceRepository): ProduceService {
     return {
-        async list() {
-            try {
+        async list(params = {}) {
 
-                const rows = await repo.findMany();
-                const data = rows.map(toProduceDTO);
+            const paramsValidationResult = validateListParams(params)
 
-                return {
-                    ok: true,
-                    data: data,
-                };
-
-            } catch (error) {
-                console.error(error);
-                return {
-                    ok: false,
-                    error: {
-                        code: 500,
-                        message: "Noe gikk galt med serveren",
-                    },
-                };
+            if(!paramsValidationResult.ok){
+                return{
+                ok: false,
+                error: {
+                    code: "400",
+                    message: "Ugylid parameter",
+                    fieldErrors: {[paramsValidationResult.field]: [paramsValidationResult.error]}
+                 }
+                }
             }
+            const result = await repo.findMany(paramsValidationResult.params);
 
+            if(!result.ok){
+                return result;
+            }
+            return{
+                ok: true,
+                //om vi skulle endret listen som med en bruker uten data
+                //result.data.map(toUserDTO)
+                data: result.data
+            }
         },
 
         async find(id) {

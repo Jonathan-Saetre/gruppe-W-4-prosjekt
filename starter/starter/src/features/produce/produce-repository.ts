@@ -10,11 +10,13 @@ import {
     type CreateProduce,
     type UpdateProduce,
 } from "@/db/schema";
+import { ProduceListParams } from "./utils/validate-list-params";
+import { ResultParams } from "./Result";
 
 // Kontrakten for repository. Servicen er bare avhengig av dette
 // interfacet, ikke av hvordan databasen faktisk er satt opp.
 export interface ProduceRepository {
-    findMany(): Promise<Produce[]>;
+    findMany(params: ProduceListParams): Promise<ResultParams>;
     findById(id: string): Promise<Produce | null>;
     create(data: CreateProduce): Promise<Produce>;
     update(id: string, data: UpdateProduce): Promise<Produce | null>;
@@ -25,9 +27,38 @@ export interface ProduceRepository {
 // Derfor bruker vi alltid _db her inne, aldri den globale db.
 export function createProduceRepository(_db: DB): ProduceRepository {
     return {
-        async findMany() {
+        async findMany({pickedUp, limit, q}) {
+            try{
+                const rows = await _db.query.produce.findMany({
+                    where: {
+                        pickedUp,
 
-            return await _db.select().from(produce).orderBy(desc(produce.createdAt))
+                        OR: q ? [
+                            {title: {like: `%${q}%`}},
+                            {category: {like: `%${q}%`}},
+                            {pickupLocation: {like: `%${q}%`}}
+                        ]
+                        : undefined
+                    }, 
+                    orderBy: {createdAt: "desc"},
+                    limit,
+                });
+                return{
+                    ok: true,
+                    data: rows,
+                } 
+                 }catch(error){
+                    console.error(error)
+                    return{
+                    ok: false,
+                    error: {
+                        code: "500",
+                        message: "Noe gikk galt med uthenting",
+                        fieldErrors: {},
+                    },
+                };
+            }
+            //return await _db.select().from(produce).orderBy(desc(produce.createdAt))
         },
 
 
