@@ -33,7 +33,8 @@ export function createProduceRepository(_db: DB): ProduceRepository {
         },
 
         async create(data) {
-            throw new Error("Not implemented");
+            const [row] = await _db.insert(produce).values(data).returning();
+            return row;
         },
 
         async update(id, data) {
