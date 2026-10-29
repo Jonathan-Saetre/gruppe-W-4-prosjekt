@@ -3,17 +3,38 @@
 
 import type { RequestInfo } from "rwsdk/worker";
 import { produceService, type ProduceService } from "./produce-service";
+import { parseParams } from "./utils/parse-params";
+export interface ProduceController{
+    list(requestInfo: RequestInfo): Promise<Response>;
+}
 
-export function createProduceController(service: ProduceService) {
+
+
+
+
+export function createProduceController(service: ProduceService): ProduceController {
     return {
-        async list(_info: RequestInfo) {
+        async list(_info: RequestInfo, {request, ctx}: RequestInfo) {
+            const params = parseParams(request);
 
-            const result = await service.list();
+            const result = await service.list(params);
 
-            return result.ok
-                ? Response.json(result, { status: 200 })
-                : Response.json(result, { status: result.error.code });
-
+            if(!result.ok){
+                return Response.json({
+                    ok: false,
+                    error: result.error
+                },{
+                    status: Number(result.error.code),
+                }
+            )
+            }
+            return Response.json({
+                ok: true,
+                data: result.data,
+            },{
+                status: 200,
+            }
+          )
         },
 
         async find({ params }: RequestInfo) {
