@@ -44,7 +44,7 @@ export function createProduceRepository(_db: DB): ProduceRepository {
         },
 
         async remove(id) {
-            throw new Error("Not implemented");
+            await _db.delete(produce).where(eq(produce.id, id));
         },
 
     };

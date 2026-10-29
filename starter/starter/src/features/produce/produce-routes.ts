@@ -10,6 +10,7 @@ export const produceRoutes = [
   route("/api/v1/produce/:id", {
     get: produceController.find,
     patch: produceController.update,
+    delete: produceController.remove,
   })
 ];
 

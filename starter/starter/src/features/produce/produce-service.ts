@@ -14,7 +14,7 @@ export interface ProduceService {
   find(id: string): Promise<Result<ProduceDTO>>;
   create(input: unknown, userId: number): Promise<Result<ProduceDTO>>;
   update(id: string, input: unknown, userId: number): Promise<Result<ProduceDTO>>;
-  remove(id: string): Promise<Result<null>>;
+  remove(id: string, userId: number): Promise<Result<null>>;
 }
 
 
@@ -200,8 +200,45 @@ export function createProduceService(repo: ProduceRepository): ProduceService {
       }
     },
 
-    async remove(id) {
-      throw new Error("Not implemented");
+    async remove(id, userId) {
+      try {
+
+        const existing = await repo.findById(id)
+        
+        if (!existing) {
+            return {
+                ok: false,
+                error: {
+                    code: 404,
+                    message: "Innlegget finnes ikke"
+                }
+            }
+        }
+
+        if (existing.userId !== userId) {
+            return {
+                ok: false,
+                 error: {
+                    code: 403,
+                    message: "Du kan bare slette dine egne innlegg"
+                }
+            }
+        }
+        await repo.remove(id);
+        
+        return {
+            ok: true, 
+            data: null,}
+
+      } catch (error) {
+        console.error(error);
+        return {
+            ok: false, 
+            error: {
+            code: 500,
+            message: "Noe gikk galt med serveren"}, 
+            }
+      }
     },
   };
 }

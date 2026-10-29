@@ -93,8 +93,22 @@ export function createProduceController(service: ProduceService) {
 
     },
 
-    async remove(info: RequestInfo) {
-        return new Response("Not implemented", { status: 501 });
+    async remove({ctx, params}: RequestInfo) {
+         if (!ctx.user) {
+                return Response.json({
+                    ok: false,
+                    error: {
+                        code: 401,
+                        message: "Du må være logget inn"
+                    } }, 
+                    { status: 401 },
+                );
+        }
+        const result = await service.remove(params.id, ctx.user.id);
+
+         return result.ok
+            ? new Response(null, { status: 204 })
+            : Response.json(result, { status: result.error.code });
     },
 };
 }
