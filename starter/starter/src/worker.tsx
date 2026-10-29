@@ -11,6 +11,7 @@ import { Register } from "@/app/pages/Register";
 import { UserSession } from "@/sessions/UserSession";
 import { users } from "@/db/schema";
 import { sessionStore } from "@/lib/session";
+import { produceRoutes } from "@/features/produce/produce-routes";
 
 export type AppContext = {
   user: { id: number; name: string; email: string } | null;
@@ -48,6 +49,7 @@ const app = defineApp([
   route("/api/status", () =>
     Response.json({ status: "ok", version: "0.1.0" }),
   ),
+   ...produceRoutes,
 
   render(Document, [
     route("/login", Login),
