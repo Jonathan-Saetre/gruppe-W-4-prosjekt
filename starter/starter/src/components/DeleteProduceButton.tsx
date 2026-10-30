@@ -14,7 +14,6 @@ export function DeleteProduceButton({ id }: { id: string }) {
     try {
       const res = await fetch(`/api/v1/produce/${id}`, { method: "DELETE" });
 
-      // 204 = slettet, ingen body. Alt annet har en feilmelding i JSON.
       if (res.status === 204) {
         window.location.href = "/profile";
         return;

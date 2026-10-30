@@ -9,7 +9,6 @@ export function LogoutButton({ className }: { className?: string }) {
   async function handleLogout() {
     setBusy(true);
     await logoutAction();
-    // Full sidelasting, slik at serveren leser cookien på nytt.
     window.location.href = "/";
   }
 

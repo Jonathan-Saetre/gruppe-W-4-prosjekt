@@ -1,5 +1,4 @@
-// src/app/pages/Home.tsx
-import Search from "@/components/SearchBar"; // ✅ Changed back to default import
+import Search from "@/components/SearchBar";
 import { ProduceList } from "@/components/ProduceList";
 import { requestInfo } from "rwsdk/worker";
 import { parseParams } from "@/features/produce/utils/parse-params";

@@ -12,8 +12,6 @@ export default async function Profile({ ctx }: RequestInfo) {
     return new Response(null, { status: 302, headers: { Location: "/login" } });
   }
 
-  // Midlertidig spørring her. Når vi vet hvordan repositoryet ser ut,
-  // flyttes den til en findByUserId-metode der.
   const db = drizzle(env.DB);
   const myPosts = await db
     .select()
