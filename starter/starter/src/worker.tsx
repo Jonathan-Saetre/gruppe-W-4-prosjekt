@@ -12,7 +12,10 @@ import { UserSession } from "@/sessions/UserSession";
 import { users } from "@/db/schema";
 import { sessionStore } from "@/lib/session";
 import { produceRoutes } from "@/features/produce/produce-routes";
+
+// Import the missing pages
 import ProduceDetail from "./app/pages/produce/ProduceDetailPage";
+import ProduceNewPage from "./app/pages/produce/ProduceNewPage"; // ✅ Added this import
 import Profile from "./app/pages/ProfilePage";
 import ProduceEdit from "./app/pages/produce/ProduceEditPage";
 
@@ -52,13 +55,16 @@ const app = defineApp([
   route("/api/status", () =>
     Response.json({ status: "ok", version: "0.1.0" }),
   ),
-   ...produceRoutes,
+  ...produceRoutes,
 
   render(Document, [
     route("/login", Login),
     route("/register", Register),
     route("/", Home),
+    
+    route("/produce/new", ProduceNewPage), 
     route("/produce/:id", ProduceDetail),
+    
     route("/profile", Profile),
     route("/profile/:id", ProduceEdit)
   ]),

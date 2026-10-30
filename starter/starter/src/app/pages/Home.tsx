@@ -1,55 +1,29 @@
-
-import { useState } from "react";
-import { ProduceCard } from "@/components/ProduceCard";
-import { CreateListingModal } from "@/components/CreateListingModal";
-import { logoutAction } from "@/lib/auth-actions";
-import Search from "@/components/SearchBar";
+// src/app/pages/Home.tsx
+import Search from "@/components/SearchBar"; // ✅ Changed back to default import
 import { ProduceList } from "@/components/ProduceList";
 import { requestInfo } from "rwsdk/worker";
 import { parseParams } from "@/features/produce/utils/parse-params";
 import { produceService } from "@/features/produce/produce-service";
-
-// interface Listing {
-//   id: number;
-//   title: string;
-//   category: string;
-//   amount: string;
-//   location: string;
-//   imageUrl?: string;
-// }
-
-// interface HomeProps {
-//   ctx: {
-//     user: { id: number; name: string; email: string } | null;
-//   };
-// }
+import { logoutAction } from "@/lib/auth-actions";
 
 export async function Home() {
-  const {ctx, request} = requestInfo
-
-  //const [isModalOpen, setIsModalOpen] = useState(false);
+  const { ctx, request } = requestInfo;
   const user = ctx.user;
 
-  const handleLogout = async () => {
-    await logoutAction();
-    window.location.href = "/";
-  };
-
   const params = parseParams(request);
-
   const result = await produceService.list(params);
 
-  if(!result.ok){
-    return(
-      <p>Klarter ikke å hente inn råvarer: {result.error.message}</p>
-    )
+  if (!result.ok) {
+    return (
+      <p>Klarte ikke å hente inn råvarer: {result.error.message}</p>
+    );
   }
 
   return (
     <main className="mx-auto max-w-4xl p-8 font-sans">
       <header className="mb-10 flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-center sm:justify-between">
         <section>
-          <Search/>
+          <Search />
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
             Nabo Hagen 🍎
           </h1>
@@ -60,20 +34,19 @@ export async function Home() {
 
         <nav>
           {user ? (
-            <p className="flex items-center gap-3 rounded-full bg-slate-100 px-4 py-2">
+            <div className="flex items-center gap-3 rounded-full bg-slate-100 px-4 py-2">
               <span className="text-sm font-medium text-slate-700">
                 Hei, {user.name}!
               </span>
               <a href="/profile" aria-label="Sender deg til profilen siden din">
                 👤
               </a>
-              <button
-                //onClick={handleLogout}
-                className="text-xs font-semibold text-rose-600 hover:underline"
-              >
-                Logg ut
-              </button>
-            </p>
+              <form action={logoutAction}>
+                <button className="text-xs font-semibold text-rose-600 hover:underline">
+                  Logg ut
+                </button>
+              </form>
+            </div>
           ) : (
             <a
               href="/login"
@@ -90,22 +63,16 @@ export async function Home() {
           <h2 className="text-xl font-bold text-slate-800">Aktuelt i nærområdet</h2>
 
           {user && (
-            <button
-              //onClick={() => setIsModalOpen(true)}
+            <a
+              href="/produce/new"
               className="rounded-md bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
             >
               + Del fra hagen
-            </button>
+            </a>
           )}
         </header>
-        <ProduceList produce={result.data}/>
+        <ProduceList produce={result.data} />
       </section>
-
-      {/* <CreateListingModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onAddListing={handleAddListing}
-      /> */}
     </main>
   );
 }
