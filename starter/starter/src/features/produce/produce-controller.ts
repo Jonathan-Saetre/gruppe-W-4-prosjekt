@@ -6,15 +6,17 @@ import { produceService, type ProduceService } from "./produce-service";
 import { parseParams } from "./utils/parse-params";
 export interface ProduceController{
     list(requestInfo: RequestInfo): Promise<Response>;
+    find(requestInfo: RequestInfo): Promise<Response>;
+    create(requestInfo: RequestInfo): Promise<Response>;
+    update(requestInfo: RequestInfo): Promise<Response>;
+    remove(requestInfo: RequestInfo): Promise<Response>;
+   
 }
-
-
-
 
 
 export function createProduceController(service: ProduceService): ProduceController {
     return {
-        async list(_info: RequestInfo, {request, ctx}: RequestInfo) {
+        async list( {request, ctx}: RequestInfo) {
             const params = parseParams(request);
 
             const result = await service.list(params);
