@@ -6,8 +6,10 @@
 // startet. Da slipper dere å lure på om feilen ligger i dataene.
 import { defineScript } from "rwsdk/worker";
 import { drizzle } from "drizzle-orm/d1";
-import { users, tasks } from "./schema";
+import { users, tasks, produce } from "./schema";
 import { hashPassword } from "@/lib/password";
+
+
 
 // Passordet til testbrukeren. Kort nok til å huske, langt nok til å
 // passere minLength={8} i Register.tsx.
@@ -18,6 +20,7 @@ export const seedData = async (env: Env) => {
 
   // Tøm først, så seed kan kjøres om igjen uten å doble alt.
   await db.delete(tasks);
+  await db.delete(produce);
   await db.delete(users);
 
   // Hashen tar ~100 ms med 100k PBKDF2-runder. Greit i en seed, men det er
@@ -47,6 +50,27 @@ export const seedData = async (env: Env) => {
       completed: false,
       userId: user.id,
       dueDate: new Date(Date.now() + 86_400_000),
+    },
+  ]);
+
+  await db.insert(produce).values([
+    {
+      title: "Epler - Gis Bort",
+      category: "frukt",
+      amount: 3,
+      unit: "poser",
+      pickupLocation: "Tistedal Skole, Tistedal",
+      pickupDeadline: new Date(Date.now() + 86_400_000), 
+      userId: user.id,
+    },
+    {
+      title: "Tomater - Gis Bort",
+      category: "grønnsaker",
+      amount: 2,
+      unit: "kg", 
+      pickupLocation: "Extra Brødløs",
+      pickupDeadline: new Date(Date.now() + 86_400_000),
+      userId: user.id,
     },
   ]);
 
