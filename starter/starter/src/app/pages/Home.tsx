@@ -1,48 +1,21 @@
-
-import { useState } from "react";
-import { ProduceCard } from "@/components/ProduceCard";
-import { CreateListingModal } from "@/components/CreateListingModal";
-import { logoutAction } from "@/lib/auth-actions";
 import Search from "@/components/SearchBar";
 import { ProduceList } from "@/components/ProduceList";
 import { requestInfo } from "rwsdk/worker";
 import { parseParams } from "@/features/produce/utils/parse-params";
 import { produceService } from "@/features/produce/produce-service";
-
-// interface Listing {
-//   id: number;
-//   title: string;
-//   category: string;
-//   amount: string;
-//   location: string;
-//   imageUrl?: string;
-// }
-
-// interface HomeProps {
-//   ctx: {
-//     user: { id: number; name: string; email: string } | null;
-//   };
-// }
+import { logoutAction } from "@/lib/auth-actions";
 
 export async function Home() {
-  const {ctx, request} = requestInfo
-
-  //const [isModalOpen, setIsModalOpen] = useState(false);
+  const { ctx, request } = requestInfo;
   const user = ctx.user;
 
-  const handleLogout = async () => {
-    await logoutAction();
-    window.location.href = "/";
-  };
-
   const params = parseParams(request);
-
   const result = await produceService.list(params);
 
-  if(!result.ok){
-    return(
-      <p>Klarter ikke å hente inn råvarer: {result.error.message}</p>
-    )
+  if (!result.ok) {
+    return (
+      <p>Klarte ikke å hente inn råvarer: {result.error.message}</p>
+    );
   }
 
   return (
@@ -86,22 +59,16 @@ export async function Home() {
           <h2 className="text-xl font-bold text-slate-800">Aktuelt i nærområdet</h2>
 
           {user && (
-            <button
-              //onClick={() => setIsModalOpen(true)}
+            <a
+              href="/produce/new"
               className="rounded-md bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
             >
               + Del fra hagen
-            </button>
+            </a>
           )}
         </header>
-        <ProduceList produce={result.data}/>
+        <ProduceList produce={result.data} />
       </section>
-
-      {/* <CreateListingModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onAddListing={handleAddListing}
-      /> */}
     </main>
   );
 }
