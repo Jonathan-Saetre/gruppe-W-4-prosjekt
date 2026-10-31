@@ -47,9 +47,31 @@ export async function Home() {
 
   return (
     <main className="mx-auto max-w-4xl p-8 font-sans">
-      <header className="mb-10 flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-center sm:justify-between">
-        <section>
-          <Search/>
+      <header className="flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-center sm:justify-between">
+        <section className="w-full">
+          <div className="flex w-full flex-wrap justify-between items-center gap-3 py-4">
+           <Search/>
+           <nav className="ml-auto">
+           {user ? (
+               <a className="flex whitespace-nowrap items-center gap-3 rounded-full bg-[#C0392B]/70 hover:bg-[#C0392B]/35 px-4 py-2" 
+               href="/profile" aria-label="Sender deg til profilen siden din">
+               <p>
+               <span className="text-sm font-medium">
+               Hei, {user.name}!
+               <span className="text-lg">👤</span>
+               </span>
+               </p>
+               </a>
+           ) : (
+             <a
+               href="/login"
+               className="rounded-md border bg-[#6B8E23] px-5 py-2 text-sm font-medium text-[#FCF8E8] transition hover:bg-[#405516]"
+             >
+               Logg inn
+             </a>
+           )}
+         </nav>
+        </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
             Nabo Hagen 🍎
           </h1>
@@ -57,32 +79,6 @@ export async function Home() {
             Redd råvarer fra å gå til spille! Finn gratis frukt og grønt fra hager nær deg.
           </p>
         </section>
-
-        <nav>
-          {user ? (
-            <p className="flex items-center gap-3 rounded-full bg-slate-100 px-4 py-2">
-              <span className="text-sm font-medium text-slate-700">
-                Hei, {user.name}!
-              </span>
-              <a href="/profile" aria-label="Sender deg til profilen siden din">
-                👤
-              </a>
-              <button
-                //onClick={handleLogout}
-                className="text-xs font-semibold text-rose-600 hover:underline"
-              >
-                Logg ut
-              </button>
-            </p>
-          ) : (
-            <a
-              href="/login"
-              className="rounded-md border bg-[#6B8E23] border-slate-300 px-5 py-2 text-sm font-medium text-[#FCF8E8] transition hover:bg-[#405516]"
-            >
-              Logg inn
-            </a>
-          )}
-        </nav>
       </header>
 
       <section>
