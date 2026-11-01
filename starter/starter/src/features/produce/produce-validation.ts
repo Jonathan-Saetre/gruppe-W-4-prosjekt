@@ -7,12 +7,13 @@ import { z } from "zod";
 
 export const createProduceSchema = z.object({
     title: z.string().trim().min(1, "Tittel er påkrevd"),
-    description: z.string().trim().optional(),
+    description: z.string().trim().nullish(),
     category: z.string().trim().min(1, "Kategori er påkrevd"),
     pickupLocation: z.string().trim().min(1, "Hentested er påkrevd"),
     // coerce: fra et skjema kommer alt som tekst, så "3" gjøres om til tallet 3.
     amount: z.coerce.number().positive("Mengde må være større enn 0"),
     unit: z.enum(["kg", "stk", "poser"]),
+    contactInfo: z.string().trim().min(1, "Kontakt info er påkrevd").max(100, "Kontakt kan være maks 100 tegn"),
     pickupDeadline: z.coerce.date(),
     imageKey: z.instanceof(File).refine((file) => file.type.startsWith("image/"), "Filen må være et bilde").optional()
 });

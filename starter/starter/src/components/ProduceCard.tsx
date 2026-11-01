@@ -17,18 +17,21 @@ export function ProduceCard({ produce }: { produce: Produce }) {
         </figcaption>
       </figure>
 
-      <section className="p-5">
-        <h3 className="text-lg font-bold text-[#FCF8E8]">{title}</h3>
-        <p className="mt-2 flex items-center gap-1 text-sm font-extrabold text-[#FCF8E8]">
-          {amount} {unit}
-          {pickedUp && <span className="ml-2 text-sm font-extrabold text-[#FCF8E8]">(Hentet)</span>}
-        </p>
-        <p className="mt-3 flex items-center gap-1 text-sm text-[#FCF8E8]">
-          <span className="text-lg">🗺️</span> <span>{pickupLocation}</span>
-        </p>
-        <p className="mt-1 text-xs text-[#FCF8E8] font-semibold">Kan hentes til {pickupDeadline.toISOString().slice(0, 10)}</p>
-      </section>
-    </article>
+        <section className="flex flex-1 flex-col p-5">
+          <h3 className="text-lg font-bold text-[#FCF8E8]">{title}</h3>
+          <p className="mt-2 flex items-center gap-1 text-sm font-extrabold text-[#FCF8E8]">
+            {amount} {unit}
+            {pickedUp && <span className="ml-2 text-sm font-extrabold text-[#FCF8E8]">(Hentet)</span>}
+          </p>
+          <p className="mt-3 flex items-center gap-1 text-sm text-[#FCF8E8]">
+            <span className="text-lg">🗺️</span> <span>{pickupLocation}</span>
+          </p>
+          <p className="mt-1 text-xs text-[#FCF8E8] font-semibold">
+            Kan hentes til {pickupDeadline.toISOString().slice(0, 10)}
+          </p>
+        </section>
+
+      </article>
     </a>
   );
 }

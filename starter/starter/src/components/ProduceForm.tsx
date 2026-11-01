@@ -12,8 +12,8 @@ export type ProduceFormValues = {
   unit: "kg" | "stk" | "poser";
   pickupDeadline: string | Date;
   pickedUp: boolean;
-  contactInfo: string | null; // ✅ Added contact info
-  imageKey?: string | null;   // ✅ Added image reference
+  contactInfo: string | null; 
+  imageKey?: string | null;   
 };
 
 type Props = {
@@ -30,8 +30,9 @@ function toDateInput(value: string | Date | undefined): string {
   return Number.isNaN(d.getTime()) ? "" : d.toISOString().slice(0, 10);
 }
 
+// Oppdatert input-styling med farger fra paletten
 const inputClass =
-  "mt-1 w-full rounded-lg border border-slate-300 p-2.5 text-sm focus:border-emerald-600 focus:outline-none";
+  "mt-1 w-full rounded-lg border border-slate-300 p-2.5 text-sm bg-slate-50 text-slate-800 transition-colors focus:bg-white focus:border-[#6B8E23] focus:outline-none focus:ring-1 focus:ring-[#6B8E23]/30";
 const labelClass = "block text-sm font-medium text-slate-700";
 
 export function ProduceForm({ mode, initial }: Props) {
@@ -44,7 +45,6 @@ export function ProduceForm({ mode, initial }: Props) {
   const [deadline, setDeadline] = useState(toDateInput(initial?.pickupDeadline));
   const [pickedUp, setPickedUp] = useState(initial?.pickedUp ?? false);
   
-  // New states for contact info and image
   const [contactInfo, setContactInfo] = useState(initial?.contactInfo ?? "");
   const [imageFile, setImageFile] = useState<File | null>(null);
 
@@ -58,7 +58,6 @@ export function ProduceForm({ mode, initial }: Props) {
     setFormError(null);
     setFieldErrors({});
 
-    // ✅ We use FormData instead of JSON to handle the file upload
     const formData = new FormData();
     formData.append("title", title);
     if (description.trim() !== "") formData.append("description", description);
@@ -79,7 +78,6 @@ export function ProduceForm({ mode, initial }: Props) {
       formData.append("pickedUp", String(pickedUp));
     }
 
-    // Append the file if one was selected
     if (imageFile) {
       formData.append("imageKey", imageFile);
     }
@@ -89,7 +87,6 @@ export function ProduceForm({ mode, initial }: Props) {
         mode === "create" ? "/api/v1/produce" : `/api/v1/produce/${initial?.id}`,
         {
           method: mode === "create" ? "POST" : "PATCH",
-          // ❌ Remove Content-Type header. Fetch will set it automatically with the correct boundary for FormData
           body: formData,
         },
       );
@@ -111,16 +108,17 @@ export function ProduceForm({ mode, initial }: Props) {
 
   const err = (field: string) =>
     fieldErrors[field]?.length ? (
-      <small className="mt-1 block text-xs text-red-600">{fieldErrors[field]![0]}</small>
+      <small className="mt-1 block text-xs font-medium text-[#C0392B]">{fieldErrors[field]![0]}</small>
     ) : null;
 
   return (
-    <form onSubmit={handleSubmit} className="mx-auto w-full max-w-lg space-y-4">
-      <header>
-        <h1 className="text-2xl font-bold text-slate-800">
+    // Wrapper formen i et hvitt kort for å skille det fra den gule bakgrunnen
+    <form onSubmit={handleSubmit} className="mx-auto w-full max-w-lg rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 space-y-5">
+      <header className="border-b border-slate-100 pb-4">
+        <h1 className="text-2xl font-bold text-[#405516]">
           {mode === "create" ? "Del fra hagen din 🌿" : "Rediger innlegg"}
         </h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-2 text-sm text-slate-600">
           {mode === "create"
             ? "Har du mer frukt eller grønt enn du rekker å spise? Gi det bort til naboene dine!"
             : "Oppdater mengde, frist eller marker at alt er hentet."}
@@ -128,7 +126,7 @@ export function ProduceForm({ mode, initial }: Props) {
       </header>
 
       {formError && (
-        <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
+        <p role="alert" className="rounded-lg border border-[#C0392B]/20 bg-[#C0392B]/10 p-3 text-sm font-medium text-[#C0392B]">
           {formError}
         </p>
       )}
@@ -158,7 +156,7 @@ export function ProduceForm({ mode, initial }: Props) {
         {err("category")}
       </p>
 
-      <fieldset className="grid grid-cols-2 gap-3">
+      <fieldset className="grid grid-cols-2 gap-4">
         <legend className="sr-only">Mengde</legend>
         <p>
           <label htmlFor="amount" className={labelClass}>Mengde</label>
@@ -190,7 +188,6 @@ export function ProduceForm({ mode, initial }: Props) {
         {err("pickupDeadline")}
       </p>
 
-      {/* ✅ NEW: Contact Info Field */}
       <p>
         <label htmlFor="contactInfo" className={labelClass}>Kontaktinfo</label>
         <input id="contactInfo" required value={contactInfo}
@@ -199,7 +196,6 @@ export function ProduceForm({ mode, initial }: Props) {
         {err("contactInfo")}
       </p>
 
-      {/* ✅ NEW: Image Upload Field */}
       <p>
         <label htmlFor="image" className={labelClass}>Last opp bilde (valgfritt)</label>
         <input id="image" type="file" accept="image/*"
@@ -209,23 +205,23 @@ export function ProduceForm({ mode, initial }: Props) {
       </p>
 
       {mode === "edit" && (
-        <p className="flex items-center gap-2">
+        <p className="flex items-center gap-2 rounded-lg bg-slate-50 p-3">
           <input id="pickedUp" type="checkbox" checked={pickedUp}
             onChange={(e) => setPickedUp(e.target.checked)}
-            className="h-4 w-4 rounded border-slate-300 text-emerald-600" />
-          <label htmlFor="pickedUp" className="text-sm text-slate-700">
+            className="h-4 w-4 rounded border-slate-300 text-[#6B8E23] focus:ring-[#6B8E23]" />
+          <label htmlFor="pickedUp" className="text-sm font-medium text-slate-700 select-none cursor-pointer">
             Alt er hentet (skjules som tilgjengelig)
           </label>
         </p>
       )}
 
-      <menu className="flex justify-end gap-3 border-t border-slate-100 pt-4">
+      <menu className="flex justify-end gap-3 border-t border-slate-100 pt-5">
         <a href={mode === "edit" ? "/profile" : "/"}
-          className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium bg-[#C0392B] text-[#FCF8E8] hover:bg-[#C0392B]/60">
+          className="rounded-lg border border-[#C0392B]/20 bg-[#C0392B] px-5 py-2.5 text-sm font-semibold text-[#FCF8E8] transition-colors hover:bg-[#C0392B]/80">
           Avbryt
         </a>
         <button type="submit" disabled={submitting}
-          className="rounded-lg bg-[#6B8E23] px-4 py-2 text-sm font-medium text-[#FCF8E8] hover:bg-[#405516] disabled:opacity-60">
+          className="rounded-lg bg-[#6B8E23] px-5 py-2.5 text-sm font-semibold text-[#FCF8E8] shadow-sm transition-colors hover:bg-[#405516] disabled:opacity-60">
           {submitting ? "Lagrer …" : mode === "create" ? "Legg ut i nabolaget" : "Lagre endringer"}
         </button>
       </menu>
