@@ -21,7 +21,7 @@ export default async function ProduceDetail({ params, ctx }: RequestInfo) {
 
   return (
     <main className="mx-auto max-w-2xl p-8 font-sans">
-      <a href="/" className="text-sm text-emerald-700 hover:underline">← Tilbake</a>
+      <a href="/" className="text-sm text-[#6B8E23] hover:underline">← Tilbake</a>
 
       <article className="mt-4 overflow-hidden rounded-md border border-slate-100 bg-white shadow-sm">
         <figure className="h-64 w-full bg-slate-100">

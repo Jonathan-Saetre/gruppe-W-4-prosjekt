@@ -3,6 +3,7 @@ import { Params } from "./parse-params";
 //ProduceListParams baserer seg på hva vi skal ha muligheten til å filtere
 export type ProduceListParams = {
     pickedUp?: boolean;
+    category?: string;
     q?: string; 
     limit?: number;
 }
@@ -31,7 +32,18 @@ const params: ProduceListParams = {};
      }
     }
     params.pickedUp = input.pickedUp == "true"
+} if(input.category){
+    const invalidCategoryValue = input.category !== "frukt" && input.category !== "bær" && input.category !== "grønnsaker"
+    && input.category !== "friske urter" && input.category !== "sopp" && input.category !== "nøtter og frø"
+    if(invalidCategoryValue){
+        return{
+            ok: false,
+            field: "category",
+            error: "category må være en av de valgte categoryene"
+        }
+    }     
 }
+ params.category = input.category;
 //trim ta vekk mellomrom slik at search må innholde en verdi
 const search = input.q?.trim()
     if(search) params.q = search;

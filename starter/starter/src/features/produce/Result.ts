@@ -11,3 +11,14 @@ export type ResultParams = {
         fieldErrors: Record<string, string[]>
     }
 }
+
+export type Result = {
+    ok: true,
+    data: any,
+} | {
+    ok: false,
+    error: {
+        code: string,
+        message: string,
+    }
+}
