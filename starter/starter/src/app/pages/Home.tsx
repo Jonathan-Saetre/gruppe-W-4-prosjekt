@@ -20,16 +20,16 @@ export async function Home() {
 
   return (
     <main className="mx-auto max-w-4xl p-8 font-sans">
-      <header className="flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-center sm:justify-between">
+      <header className="flex flex-col gap-4 border-b border-slate-300 pb-6 sm:flex-row sm:items-center sm:justify-between">
         <section className="w-full">
           <div className="flex w-full flex-wrap justify-between items-center gap-3 py-4">
            <Search/>
            <nav className="ml-auto">
            {user ? (
-               <a className="flex whitespace-nowrap items-center gap-3 rounded-full bg-[#C0392B]/70 hover:bg-[#C0392B]/35 px-4 py-2" 
+               <a className="flex whitespace-nowrap items-center gap-3 rounded-full bg-[#C0392B]/80 hover:bg-[#C0392B]/40 px-4 py-2" 
                href="/profile" aria-label="Sender deg til profilen siden din">
                <p>
-               <span className="text-sm font-medium">
+               <span className="text-sm font-medium text-[#FCF8E8]">
                Hei, {user.name}!
                <span className="text-lg">👤</span>
                </span>
@@ -61,7 +61,7 @@ export async function Home() {
           {user && (
             <a
               href="/produce/new"
-              className="rounded-md bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
+              className="rounded-md bg-[#6B8E23] px-4 py-2.5 text-sm font-semibold text-[#FCF8E8] shadow-sm transition hover:bg-[#405516]"
             >
               + Del fra hagen
             </a>

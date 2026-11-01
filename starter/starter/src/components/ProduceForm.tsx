@@ -21,7 +21,7 @@ type Props = {
   initial?: ProduceFormValues;
 };
 
-const CATEGORIES = ["Epler", "Plommer", "Bær", "Grønnsaker"];
+const CATEGORIES = ["frukt", "grønnsaker", "bær", "friske urter", "sopp", "nøtter og frø"];
 const UNITS = ["kg", "stk", "poser"] as const;
 
 function toDateInput(value: string | Date | undefined): string {
@@ -37,7 +37,7 @@ const labelClass = "block text-sm font-medium text-slate-700";
 export function ProduceForm({ mode, initial }: Props) {
   const [title, setTitle] = useState(initial?.title ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
-  const [category, setCategory] = useState(initial?.category ?? CATEGORIES[0]);
+  const [category, setCategory] = useState(initial?.category ?? "");
   const [amount, setAmount] = useState(initial ? String(initial.amount) : "");
   const [unit, setUnit] = useState<(typeof UNITS)[number]>(initial?.unit ?? "kg");
   const [pickupLocation, setPickupLocation] = useState(initial?.pickupLocation ?? "");
@@ -150,8 +150,10 @@ export function ProduceForm({ mode, initial }: Props) {
 
       <p>
         <label htmlFor="category" className={labelClass}>Type råvare</label>
-        <select id="category" value={category} onChange={(e) => setCategory(e.target.value)} className={inputClass}>
-          {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+        <select id="category" value={category} required onChange={(e) => setCategory(e.target.value)} className={inputClass}>
+          <option value="" disabled>Velg kategori</option>
+          {CATEGORIES.map((c) =>
+          <option key={c} value={c}>{c}</option>)}
         </select>
         {err("category")}
       </p>
@@ -202,7 +204,7 @@ export function ProduceForm({ mode, initial }: Props) {
         <label htmlFor="image" className={labelClass}>Last opp bilde (valgfritt)</label>
         <input id="image" type="file" accept="image/*"
           onChange={(e) => setImageFile(e.target.files?.[0] || null)} 
-          className="mt-1 w-full text-sm text-slate-500 file:mr-4 file:rounded-md file:border-0 file:bg-emerald-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-emerald-700 hover:file:bg-emerald-100" />
+          className="mt-1 block w-fit text-sm text-slate-500 file:mr-4 file:rounded-md file:border-0 file:bg-[#6B8E23]/80 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[#FCF8E8] hover:file:bg-[#405516]/80"/>
         {err("image")}
       </p>
 
@@ -219,11 +221,11 @@ export function ProduceForm({ mode, initial }: Props) {
 
       <menu className="flex justify-end gap-3 border-t border-slate-100 pt-4">
         <a href={mode === "edit" ? "/profile" : "/"}
-          className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50">
+          className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium bg-[#C0392B] text-[#FCF8E8] hover:bg-[#C0392B]/60">
           Avbryt
         </a>
         <button type="submit" disabled={submitting}
-          className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-60">
+          className="rounded-lg bg-[#6B8E23] px-4 py-2 text-sm font-medium text-[#FCF8E8] hover:bg-[#405516] disabled:opacity-60">
           {submitting ? "Lagrer …" : mode === "create" ? "Legg ut i nabolaget" : "Lagre endringer"}
         </button>
       </menu>

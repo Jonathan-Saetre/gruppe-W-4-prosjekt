@@ -47,5 +47,12 @@
       "tag": "v1",
       "new_sqlite_classes": ["UserSession"]
     }
+  ],
+
+  "r2_buckets": [
+    {
+    "binding": "R2",
+    "bucket_name": "produce"
+    }
   ]
 }

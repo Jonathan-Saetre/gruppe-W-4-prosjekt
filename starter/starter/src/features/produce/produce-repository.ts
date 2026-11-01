@@ -12,7 +12,8 @@ import {
 } from "@/db/schema";
 import { ProduceListParams } from "./utils/validate-list-params";
 import { ResultParams } from "./Result";
-
+import { env } from "cloudflare:workers";
+import { Result } from "./Result";
 // Kontrakten for repository. Servicen er bare avhengig av dette
 // interfacet, ikke av hvordan databasen faktisk er satt opp.
 export interface ProduceRepository {
@@ -21,17 +22,19 @@ export interface ProduceRepository {
     create(data: CreateProduce): Promise<Produce>;
     update(id: string, data: UpdateProduce): Promise<Produce | null>;
     remove(id: string): Promise<void>;
+    uploadR2(key: string, file: File): Promise<Result> | null;
 }
 // Databasen sendes inn som parameter (dependency injection), så testene
 // kan bruke en egen database i minnet i stedet for D1.
 // Derfor bruker vi alltid _db her inne, aldri den globale db.
 export function createProduceRepository(_db: DB): ProduceRepository {
     return {
-        async findMany({pickedUp, limit, q}) {
+        async findMany({pickedUp, limit, q, category}) {
             try{
                 const rows = await _db.query.produce.findMany({
                     where: {
                         pickedUp,
+                        category,
 
                         OR: q ? [
                             {title: {like: `%${q}%`}},
@@ -84,7 +87,40 @@ export function createProduceRepository(_db: DB): ProduceRepository {
             await _db.delete(produce).where(eq(produce.id, id));
         },
 
-    };
+        async uploadR2(key: string, file: File){
+            //put lagerer bildet i R2
+            //file.stream sender filinnholdet til R2
+            const object = await env.R2.put(key, file.stream(), {
+            httpMetadata: {
+            //forteller R2 hvilken type fil det er
+            contentType: file.type,
+         }},
+        )
+                try{
+                    if(object === null){
+                        return {
+                            ok: false,
+                            error: {
+                                code: "412",
+                                message: "Precondition failed or upload returnerd null",
+                            }
+                        }
+                    }
+                    return {
+                        ok: true,
+                        data: object,
+                    }
+            }catch(error){
+                return {
+                    ok: false,
+                    error: {
+                        code: "500",
+                        message: `Upload faile: ${error}`
+                    }
+            }
+        }
+    }
+  }
 }
 
 export const produceRepository = createProduceRepository(db);
