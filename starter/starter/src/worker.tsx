@@ -13,9 +13,8 @@ import { users } from "@/db/schema";
 import { sessionStore } from "@/lib/session";
 import { produceRoutes } from "@/features/produce/produce-routes";
 
-// Import the missing pages
 import ProduceDetail from "./app/pages/produce/ProduceDetailPage";
-import ProduceNewPage from "./app/pages/produce/ProduceNewPage"; // ✅ Added this import
+import ProduceNewPage from "./app/pages/produce/ProduceNewPage";
 import Profile from "./app/pages/ProfilePage";
 import ProduceEdit from "./app/pages/produce/ProduceEditPage";
 

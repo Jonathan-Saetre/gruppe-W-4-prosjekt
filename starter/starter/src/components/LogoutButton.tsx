@@ -17,7 +17,10 @@ export function LogoutButton({ className }: { className?: string }) {
       type="button"
       onClick={handleLogout}
       disabled={busy}
-      className={className ?? "text-xs font-semibold text-rose-600 hover:underline disabled:opacity-60"}
+      className={
+        className ??
+        "text-xs font-semibold text-[#C0392B] transition-colors hover:text-[#C0392B]/70 hover:underline disabled:opacity-60"
+      }
     >
       {busy ? "Logger ut …" : "Logg ut"}
     </button>
