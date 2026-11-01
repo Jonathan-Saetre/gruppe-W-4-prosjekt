@@ -81,7 +81,7 @@ export function ProduceForm({ mode, initial }: Props) {
 
     // Append the file if one was selected
     if (imageFile) {
-      formData.append("image", imageFile);
+      formData.append("imageKey", imageFile);
     }
 
     try {
@@ -205,7 +205,7 @@ export function ProduceForm({ mode, initial }: Props) {
         <input id="image" type="file" accept="image/*"
           onChange={(e) => setImageFile(e.target.files?.[0] || null)} 
           className="mt-1 block w-fit text-sm text-slate-500 file:mr-4 file:rounded-md file:border-0 file:bg-[#6B8E23]/80 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[#FCF8E8] hover:file:bg-[#405516]/80"/>
-        {err("image")}
+        {err("imageKey")}
       </p>
 
       {mode === "edit" && (

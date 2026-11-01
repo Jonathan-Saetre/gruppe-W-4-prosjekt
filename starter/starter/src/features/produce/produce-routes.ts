@@ -14,6 +14,9 @@ export const produceRoutes = [
     get: produceController.find,
     patch: produceController.update,
     delete: produceController.remove,
-  })
+  }),
+  route("/media/*", {
+    get: produceController.getImage,
+  }),
 ];
 

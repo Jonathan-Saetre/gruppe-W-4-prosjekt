@@ -18,7 +18,7 @@ export type Result = {
 } | {
     ok: false,
     error: {
-        code: string,
+        code: number,
         message: string,
     }
 }

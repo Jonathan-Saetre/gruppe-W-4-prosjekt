@@ -26,7 +26,7 @@ export default async function ProduceDetail({ params, ctx }: RequestInfo) {
       <article className="mt-4 overflow-hidden rounded-md border border-slate-100 bg-white shadow-sm">
         <figure className="h-64 w-full bg-slate-100">
           <img
-            src={p.imageKey || "https://placehold.co/800x400"}
+            src={p.imageKey ? `/media/${p.imageKey}` : "/placeholder.png"}
             alt={p.title}
             className="h-full w-full object-cover"
           />

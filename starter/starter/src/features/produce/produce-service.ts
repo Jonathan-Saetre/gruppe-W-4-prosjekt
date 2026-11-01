@@ -22,6 +22,8 @@ export interface ProduceService {
     create(input: unknown, userId: number): Promise<Result<ProduceDTO>>;
     update(id: string, input: unknown, userId: number): Promise<Result<ProduceDTO>>;
     remove(id: string, userId: number): Promise<Result<null>>;
+    //data som forventes tilbake er et R2 objekt
+    getImage(key: string): Promise<Result<R2ObjectBody>>;
 }
 
 
@@ -110,12 +112,28 @@ export function createProduceService(repo: ProduceRepository): ProduceService {
                     }
                 }
             }
-
             try {
+                let imageKey: string | null = null
+
+                 if(parsed.data.imageKey){
+                 const file = parsed.data.imageKey
+                 //unik adresse til bildet
+                 const key = `produce/${crypto.randomUUID()}`;
+
+                 const uploaded = await repo.uploadR2(key, file)
+                 if(!uploaded.ok){
+                    return {
+                        ok: false,
+                        error: uploaded.error,
+                    }
+                 }
+                 //lagerer nøkkelen til bildet vet db hvor bildet ligger
+                 imageKey = key
+                }
                 // userId kommer fra innloggingen, ikke fra det brukeren sender inn.
                 // Ellers kunne hvem som helst lagt ut innlegg i andres navn.
-                const row = await repo.create({ ...parsed.data, userId })
-
+                //erstatt verdien til imageKey ifra parsed til imageKey
+                const row = await repo.create({ ...parsed.data, imageKey, userId })
                 return {
                     ok: true,
                     data: toProduceDTO(row),
@@ -126,14 +144,14 @@ export function createProduceService(repo: ProduceRepository): ProduceService {
                     ok: false,
                     error: {
                         code: 500,
-                        message: "Noe gikk galt med serveren"
+                        message: "Noe gikk galt med serveren",
                     },
                 }
             }
         },
 
         async update(id, input, userId) {
-            const parsed = updateProduceSchema.safeParse(input);
+          const parsed = updateProduceSchema.safeParse(input);
 
             if (!parsed.success) {
                 return {
@@ -191,7 +209,29 @@ export function createProduceService(repo: ProduceRepository): ProduceService {
                         }
                     }
                 }
-                const row = await repo.update(id, parsed.data);
+
+                // Beholder det gamle bildet hvis brukeren ikke laster opp et nytt
+                //imageKey skal være av typen string ikke file lenger om bildet har blitt lastet opp i R2
+                let imageKey: string | null = existing.imageKey;
+
+                //om imageKey har lagt inn et nytt bilde
+                //Sett bildet inn i R2 og lag ny key
+                if (parsed.data.imageKey) {
+                  const key = `produce/${crypto.randomUUID()}`;
+                  //parsed.data.imageKey er filen
+                  const uploaded = await repo.uploadR2(key, parsed.data.imageKey);
+
+                   if (!uploaded.ok) {
+                   return {
+                   ok: false,
+                   error: uploaded.error,
+                 };
+                }
+                imageKey = key;
+                }
+                //overskriver imageKey sin gamle verdi til den nye imageKey
+                const spread = {...parsed.data, imageKey}
+                const row = await repo.update(id, spread);
                 if (!row) {
                     return {
                         ok: false,
@@ -201,6 +241,16 @@ export function createProduceService(repo: ProduceRepository): ProduceService {
                         }
                     }
                 }
+                if(existing.imageKey){
+                //om brukeren hadde et bilde tidligere slett
+                 const deleteImageR2 = await repo.deleteR2(existing.imageKey);
+                 if(!deleteImageR2.ok){
+                    return{
+                        ok: false,
+                        error: deleteImageR2.error,
+                    }
+                 }
+                 }
                 return {
                     ok: true,
                     data: toProduceDTO(row),
@@ -260,6 +310,14 @@ export function createProduceService(repo: ProduceRepository): ProduceService {
                 }
             }
         },
+        async getImage(key: string){
+            const result = await repo.getR2(key);
+
+            if(!result.ok){
+                 return result;
+            }
+              return result;
+            }
     };
 }
 

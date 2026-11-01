@@ -14,6 +14,7 @@ export const createProduceSchema = z.object({
     amount: z.coerce.number().positive("Mengde må være større enn 0"),
     unit: z.enum(["kg", "stk", "poser"]),
     pickupDeadline: z.coerce.date(),
+    imageKey: z.instanceof(File).refine((file) => file.type.startsWith("image/"), "Filen må være et bilde").optional()
 });
 
 // Ved oppdatering er alle felt valgfrie (PATCH endrer bare det som sendes),
