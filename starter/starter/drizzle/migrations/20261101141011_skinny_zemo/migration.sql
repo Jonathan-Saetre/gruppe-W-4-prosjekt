@@ -1,0 +1,1 @@
+ALTER TABLE `produce` ADD `contact_info` text DEFAULT '' NOT NULL;

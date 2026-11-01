@@ -15,6 +15,7 @@ export type ProduceDTO = {
     pickupDeadline: string;
     pickedUp: boolean;
     unit: "kg" | "stk" | "poser";
+    contactInfo: string;
     userId: number;
     createdAt: string;
     imageKey: string | null;
@@ -32,6 +33,7 @@ export function toProduceDTO(row: Produce): ProduceDTO {
         pickupDeadline: row.pickupDeadline.toISOString(),
         pickedUp: row.pickedUp,
         unit: row.unit,
+        contactInfo: row.contactInfo,
         userId: row.userId,
         imageKey: row.imageKey,
         createdAt: row.createdAt.toISOString()

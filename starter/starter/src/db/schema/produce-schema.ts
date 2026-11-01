@@ -17,6 +17,7 @@ export const produce = sqliteTable(
     pickupDeadline: integer("pickup_deadline", { mode: "timestamp" }).notNull(),
     pickedUp: integer("picked_up", { mode: "boolean" }).notNull().default(false),
     unit: text("unit", { enum: ["kg", "stk", "poser"]}).notNull(),
+    contactInfo: text("contact_info").notNull().default(""),
     userId: integer("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
