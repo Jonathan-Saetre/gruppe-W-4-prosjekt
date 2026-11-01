@@ -55,6 +55,8 @@ export default async function ProduceDetail({ params, ctx }: RequestInfo) {
             <dd>📍 {p.pickupLocation}</dd>
             <dt className="font-medium text-slate-600">Kan hentes til</dt>
             <dd>{deadline}</dd>
+            <dt className="font-medium text-slate-600">Kontakt</dt>
+            <dd>{p.contactInfo}</dd>
           </dl>
 
           {isOwner && (

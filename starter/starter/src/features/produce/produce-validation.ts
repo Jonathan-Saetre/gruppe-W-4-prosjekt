@@ -13,6 +13,7 @@ export const createProduceSchema = z.object({
     // coerce: fra et skjema kommer alt som tekst, så "3" gjøres om til tallet 3.
     amount: z.coerce.number().positive("Mengde må være større enn 0"),
     unit: z.enum(["kg", "stk", "poser"]),
+    contactInfo: z.string().trim().min(1, "Kontakt info er påkrevd").max(100, "Kontakt kan være maks 100 tegn"),
     pickupDeadline: z.coerce.date(),
 });
 
