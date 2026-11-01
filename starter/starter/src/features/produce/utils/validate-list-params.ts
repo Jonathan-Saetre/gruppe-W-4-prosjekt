@@ -28,7 +28,7 @@ const params: ProduceListParams = {};
     return{
         ok: false,
         field: "pickedUp",
-        error: "pickedup må våre true eller false",
+        error: "pickedup må være true eller false",
      }
     }
     params.pickedUp = input.pickedUp == "true"
@@ -41,16 +41,19 @@ const params: ProduceListParams = {};
             field: "category",
             error: "category må være en av de valgte categoryene"
         }
-    }     
+
+        }     
+
+        params.category = input.category;
 }
- params.category = input.category;
+
 //trim ta vekk mellomrom slik at search må innholde en verdi
 const search = input.q?.trim()
     if(search) params.q = search;
 
     if(input.limit){
         const limit = Number(input.limit)
-        const isValidLimit = Number.isInteger(limit) && limit >= 1 && limit < LIST_LIMIT_MAX;
+        const isValidLimit = Number.isInteger(limit) && limit >= 1 && limit <= LIST_LIMIT_MAX;
     if(!isValidLimit){
     return{
         ok: false,

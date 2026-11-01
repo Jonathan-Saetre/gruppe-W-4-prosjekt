@@ -7,7 +7,7 @@ import { z } from "zod";
 
 export const createProduceSchema = z.object({
     title: z.string().trim().min(1, "Tittel er påkrevd"),
-    description: z.string().trim().optional(),
+    description: z.string().trim().nullish(),
     category: z.string().trim().min(1, "Kategori er påkrevd"),
     pickupLocation: z.string().trim().min(1, "Hentested er påkrevd"),
     // coerce: fra et skjema kommer alt som tekst, så "3" gjøres om til tallet 3.
