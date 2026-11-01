@@ -4,20 +4,18 @@ export function ProduceCard({ produce }: { produce: Produce }) {
   const { id, imageKey, title, category, amount, unit, pickupLocation, pickupDeadline, pickedUp } = produce;
 
   return (
-    <a href={`/produce/${id}`} className="block h-full">
-      <article className="flex h-full flex-col overflow-hidden rounded-md border border-slate-100 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md bg-[#C0392B]/95 hover:bg-[#C0392B]/35">
-        
-        <figure className="relative h-44 w-full shrink-0 bg-slate-100">
-          <img
-            src={imageKey || "https://placehold.co/400"}
-            alt={title}
-            className="h-full w-full object-cover"
-          />
-          
-          <figcaption className="absolute bottom-3 left-3 inline-block rounded-md bg-white/90 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-800 backdrop-blur-sm shadow-sm">
-            {category}
-          </figcaption>
-        </figure>
+    <a href={`/produce/${id}`}>
+    <article className="overflow-hidden rounded-md border border-slate-100 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md bg-[#C0392B]/95 hover:bg-[#C0392B]/35">
+      <figure className="relative h-44 w-full bg-slate-100">
+        <img
+          src={imageKey ? `media/${imageKey}` : "/placeholder.png"}
+          alt={title}
+          className="h-full w-full object-cover"
+        />
+        <figcaption className="absolute top-3 left-3 rounded-md bg-white/90 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-800 backdrop-blur-sm">
+          {category}
+        </figcaption>
+      </figure>
 
         <section className="flex flex-1 flex-col p-5">
           <h3 className="text-lg font-bold text-[#FCF8E8]">{title}</h3>

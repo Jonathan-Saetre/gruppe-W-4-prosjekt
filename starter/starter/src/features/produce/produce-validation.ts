@@ -15,6 +15,7 @@ export const createProduceSchema = z.object({
     unit: z.enum(["kg", "stk", "poser"]),
     contactInfo: z.string().trim().min(1, "Kontakt info er påkrevd").max(100, "Kontakt kan være maks 100 tegn"),
     pickupDeadline: z.coerce.date(),
+    imageKey: z.instanceof(File).refine((file) => file.type.startsWith("image/"), "Filen må være et bilde").optional()
 });
 
 // Ved oppdatering er alle felt valgfrie (PATCH endrer bare det som sendes),

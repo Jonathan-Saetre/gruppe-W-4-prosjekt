@@ -28,14 +28,14 @@ export default async function ProduceDetail({ params, ctx }: RequestInfo) {
           ← Tilbake
         </a>
 
-        <article className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-          <figure className="h-64 w-full bg-slate-100">
-            <img
-              src={p.imageKey || "https://placehold.co/800x400"}
-              alt={p.title}
-              className="h-full w-full object-cover"
-            />
-          </figure>
+      <article className="mt-4 overflow-hidden rounded-md border border-slate-100 bg-white shadow-sm">
+        <figure className="h-64 w-full bg-slate-100">
+          <img
+            src={p.imageKey ? `/media/${p.imageKey}` : "/placeholder.png"}
+            alt={p.title}
+            className="h-full w-full object-cover"
+          />
+        </figure>
 
           <section className="space-y-3 p-6">
             <header className="flex items-start justify-between gap-4">

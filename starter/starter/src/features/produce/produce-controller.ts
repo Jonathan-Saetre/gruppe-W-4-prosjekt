@@ -4,6 +4,7 @@
 import type { RequestInfo } from "rwsdk/worker";
 import { produceService, type ProduceService } from "./produce-service";
 import { parseParams } from "./utils/parse-params";
+import { Result } from "./Result";
 
 export interface ProduceController {
   list(requestInfo: RequestInfo): Promise<Response>;
@@ -11,6 +12,7 @@ export interface ProduceController {
   create(requestInfo: RequestInfo): Promise<Response>;
   update(requestInfo: RequestInfo): Promise<Response>;
   remove(requestInfo: RequestInfo): Promise<Response>;
+  getImage(requestInfo: RequestInfo): Promise<Response>;
 }
 
 export function createProduceController(service: ProduceService): ProduceController {
@@ -87,7 +89,7 @@ export function createProduceController(service: ProduceService): ProduceControl
         
         // Her henter vi ut filen. Du må håndtere opplastingen (f.eks. til Cloudflare R2) 
         // i servicen eller repositoriet ditt før du lagrer i databasen.
-        image: formData.get("image") as File | null, 
+        imageKey: formData.get("imageKey") as File | null, 
       };
 
       const result = await service.create(body, ctx.user.id);
@@ -135,7 +137,7 @@ export function createProduceController(service: ProduceService): ProduceControl
         unit: formData.get("unit") as "kg" | "stk" | "poser",
         contactInfo: formData.get("contactInfo") as string,
         pickupDeadline: (formData.get("pickupDeadline") as string) || undefined,
-        image: formData.get("image") as File | null,
+        imageKey: formData.get("imageKey") as File | null,
         
         // Siden dette er en FormData, kommer "pickedUp" som en streng ("true"/"false")
         pickedUp: formData.get("pickedUp") === "true",
@@ -168,7 +170,28 @@ export function createProduceController(service: ProduceService): ProduceControl
         ? new Response(null, { status: 204 })
         : Response.json(result, { status: result.error.code });
     },
+    async getImage({params}: RequestInfo){
+      const key = params.$0; //resten av stien etter produce
+
+      const result = await service.getImage(key);
+
+      if(!result.ok){
+        return new Response(result.error.message, 
+          {status: result.error.code})
+      }
+
+      const object = result.data
+      
+      return new Response(object.body, {
+        headers: {
+          "Content-Type": object.httpMetadata?.contentType ?? "application/octet-stream",
+          // 30 dagers cache + immutable: bildet endres aldri (unikt key per upload)
+          "Cache-Control": "public, max-age=2592000, immutable",
+          // httpEtag (ikke etag): allerede sitert slik HTTP-spec krever
+          "ETag": object.httpEtag,
+        }
+      })
+    }
   };
 }
-
 export const produceController = createProduceController(produceService);

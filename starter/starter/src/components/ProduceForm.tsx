@@ -79,7 +79,7 @@ export function ProduceForm({ mode, initial }: Props) {
     }
 
     if (imageFile) {
-      formData.append("image", imageFile);
+      formData.append("imageKey", imageFile);
     }
 
     try {
@@ -200,8 +200,8 @@ export function ProduceForm({ mode, initial }: Props) {
         <label htmlFor="image" className={labelClass}>Last opp bilde (valgfritt)</label>
         <input id="image" type="file" accept="image/*"
           onChange={(e) => setImageFile(e.target.files?.[0] || null)} 
-          className="mt-1 block w-fit text-sm text-slate-500 file:mr-4 file:rounded-md file:border-0 file:bg-[#6B8E23] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[#FCF8E8] file:transition-colors hover:file:bg-[#405516]"/>
-        {err("image")}
+          className="mt-1 block w-fit text-sm text-slate-500 file:mr-4 file:rounded-md file:border-0 file:bg-[#6B8E23]/80 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[#FCF8E8] hover:file:bg-[#405516]/80"/>
+        {err("imageKey")}
       </p>
 
       {mode === "edit" && (
