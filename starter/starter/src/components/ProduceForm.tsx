@@ -1,7 +1,7 @@
 "use client";
 
 import { ResultId, ResultParams } from "@/features/produce/Result";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export type ProduceFormValues = {
   id?: string;
@@ -31,12 +31,17 @@ function toDateInput(value: string | Date | undefined): string {
   return Number.isNaN(d.getTime()) ? "" : d.toISOString().slice(0, 10);
 }
 
-// Oppdatert input-styling med farger fra paletten
 const inputClass =
   "mt-1 w-full rounded-lg border border-slate-300 p-2.5 text-sm bg-slate-50 text-slate-800 transition-colors focus:bg-white focus:border-[#6B8E23] focus:outline-none focus:ring-1 focus:ring-[#6B8E23]/30";
 const labelClass = "block text-sm font-medium text-slate-700";
 
 export function ProduceForm({ mode, initial }: Props) {
+  // Ny state for å vite når React har hydrert
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const [title, setTitle] = useState(initial?.title ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
   const [category, setCategory] = useState(initial?.category ?? "");
@@ -118,7 +123,6 @@ export function ProduceForm({ mode, initial }: Props) {
     ) : null;
 
   return (
-    // Wrapper formen i et hvitt kort for å skille det fra den gule bakgrunnen
     <form onSubmit={handleSubmit} className="mx-auto w-full max-w-lg rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 space-y-5">
       <header className="border-b border-slate-100 pb-4">
         <h1 className="text-2xl font-bold text-[#405516]">
@@ -226,7 +230,7 @@ export function ProduceForm({ mode, initial }: Props) {
           className="rounded-lg border border-[#C0392B]/20 bg-[#C0392B] px-5 py-2.5 text-sm font-semibold text-[#FCF8E8] transition-colors hover:bg-[#C0392B]/80">
           Avbryt
         </a>
-        <button type="submit" disabled={submitting}
+        <button type="submit" disabled={submitting || !mounted}
           className="rounded-lg bg-[#6B8E23] px-5 py-2.5 text-sm font-semibold text-[#FCF8E8] shadow-sm transition-colors hover:bg-[#405516] disabled:opacity-60">
           {submitting ? "Lagrer …" : mode === "create" ? "Legg ut i nabolaget" : "Lagre endringer"}
         </button>

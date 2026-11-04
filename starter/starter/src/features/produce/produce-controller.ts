@@ -60,7 +60,6 @@ export function createProduceController(service: ProduceService): ProduceControl
         );
       }
 
-      // ✅ Endret fra request.json() til request.formData()
       let formData: FormData;
       try {
         formData = await request.formData();
@@ -76,7 +75,11 @@ export function createProduceController(service: ProduceService): ProduceControl
           { status: 400 });
       }
 
-      // ✅ Henter ut feltene og konverterer typer (f.eks. streng til nummer)
+      // Henter filen og sørger for at den er undefined (ikke null) hvis den mangler,
+      // slik at Zod-valideringen (.optional()) godtar det.
+      const imageFile = formData.get("imageKey");
+      const imageKey = imageFile instanceof File ? imageFile : undefined;
+
       const body = {
         title: formData.get("title") as string,
         description: (formData.get("description") as string) || null,
@@ -86,10 +89,7 @@ export function createProduceController(service: ProduceService): ProduceControl
         unit: formData.get("unit") as "kg" | "stk" | "poser",
         contactInfo: formData.get("contactInfo") as string,
         pickupDeadline: (formData.get("pickupDeadline") as string) || undefined,
-        
-        // Her henter vi ut filen. Du må håndtere opplastingen (f.eks. til Cloudflare R2) 
-        // i servicen eller repositoriet ditt før du lagrer i databasen.
-        imageKey: formData.get("imageKey") as File | null, 
+        imageKey, // Bruker den nye variabelen
       };
 
       const result = await service.create(body, ctx.user.id);
@@ -112,7 +112,6 @@ export function createProduceController(service: ProduceService): ProduceControl
         );
       }
 
-      // ✅ Endret fra request.json() til request.formData()
       let formData: FormData;
       try {
         formData = await request.formData();
@@ -128,6 +127,10 @@ export function createProduceController(service: ProduceService): ProduceControl
           { status: 400 });
       }
 
+      // Samme fiks for update
+      const imageFile = formData.get("imageKey");
+      const imageKey = imageFile instanceof File ? imageFile : undefined;
+
       const body = {
         title: formData.get("title") as string,
         description: (formData.get("description") as string) || null,
@@ -137,9 +140,7 @@ export function createProduceController(service: ProduceService): ProduceControl
         unit: formData.get("unit") as "kg" | "stk" | "poser",
         contactInfo: formData.get("contactInfo") as string,
         pickupDeadline: (formData.get("pickupDeadline") as string) || undefined,
-        imageKey: formData.get("imageKey") as File | null,
-        
-        // Siden dette er en FormData, kommer "pickedUp" som en streng ("true"/"false")
+        imageKey, // Bruker den nye variabelen
         pickedUp: formData.get("pickedUp") === "true",
       };
 
@@ -164,12 +165,11 @@ export function createProduceController(service: ProduceService): ProduceControl
       }
       const result = await service.remove(params.id, ctx.user.id);
       
-      // 204 No Content har ingen body, så vi bruker new Response(null)
-      // i stedet for Response.json.
       return result.ok
         ? new Response(null, { status: 204 })
         : Response.json(result, { status: result.error.code });
     },
+    
     async getImage({params}: RequestInfo){
       //params innholder info fra URL-en
       const key = params.$0; //resten av stien etter produce
@@ -191,9 +191,7 @@ export function createProduceController(service: ProduceService): ProduceControl
       return new Response(object.body, {
         headers: {
           "Content-Type": object.httpMetadata?.contentType ?? "application/octet-stream",
-          // 30 dagers cache + immutable: bildet endres aldri (unikt key per upload)
           "Cache-Control": "public, max-age=2592000, immutable",
-          // httpEtag (ikke etag): allerede sitert slik HTTP-spec krever
           "ETag": object.httpEtag,
         }
       })
