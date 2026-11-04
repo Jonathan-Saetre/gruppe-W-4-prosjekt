@@ -1,5 +1,6 @@
 import type { RequestInfo } from "rwsdk/worker";
 import { produceService } from "@/features/produce/produce-service";
+import { PickedUpButton } from "@/components/PickedUpButton";
 
 export default async function ProduceDetail({ params, ctx }: RequestInfo) {
   const result = await produceService.find(params.id);
@@ -67,12 +68,15 @@ export default async function ProduceDetail({ params, ctx }: RequestInfo) {
             </dl>
 
             {isOwner && (
+             <div className="flex flex-wrap items-start gap-3">
               <a
                 href={`/profile/${p.id}`}
                 className="mt-2 inline-block rounded-md bg-[#6B8E23] px-4 py-2 text-sm font-semibold text-[#FCF8E8] shadow-sm transition hover:bg-[#405516]"
               >
-                Rediger eller slett
+                Rediger eller slett    
               </a>
+              <PickedUpButton id={p.id} pickedUp={p.pickedUp} />
+              </div> 
             )}
           </section>
         </article>
