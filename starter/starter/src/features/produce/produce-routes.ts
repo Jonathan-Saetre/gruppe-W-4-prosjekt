@@ -15,6 +15,8 @@ export const produceRoutes = [
     patch: produceController.update,
     delete: produceController.remove,
   }),
+  //uansett hvilken adresse som starter med /media/
+  //så vil forespøselsen bli sendt og resten av teksten bli fanget opp
   route("/media/*", {
     get: produceController.getImage,
   }),

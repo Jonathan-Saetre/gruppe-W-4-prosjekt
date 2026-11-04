@@ -17,7 +17,7 @@ export interface ProduceController {
 
 export function createProduceController(service: ProduceService): ProduceController {
   return {
-    async list({ request, ctx }: RequestInfo) {
+    async list({ request}: RequestInfo) {
       const params = parseParams(request);
 
       const result = await service.list(params);
@@ -171,7 +171,13 @@ export function createProduceController(service: ProduceService): ProduceControl
     },
     
     async getImage({params}: RequestInfo){
-      const key = params.$0; 
+      //params innholder info fra URL-en
+      const key = params.$0; //resten av stien etter produce
+
+      //Om key ikke finnes eller nøkkelen ikke er typen string
+      if(!key || typeof key !== "string"){
+        return new Response("Ugyldig bilde nøkkel", {status: 400})
+      }
 
       const result = await service.getImage(key);
 
