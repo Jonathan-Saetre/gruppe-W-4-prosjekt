@@ -1,5 +1,6 @@
 "use client";
 
+import { ResultId, ResultParams } from "@/features/produce/Result";
 import { useState } from "react";
 
 export type ProduceFormValues = {
@@ -90,11 +91,16 @@ export function ProduceForm({ mode, initial }: Props) {
           body: formData,
         },
       );
-      const json = await res.json();
-
+      const json: ResultId = await res.json();
       if (!res.ok || !json.ok) {
-        setFormError(json.error?.message ?? "Noe gikk galt");
-        setFieldErrors(json.error?.fieldErrors ?? {});
+        setFormError("Noe gikk galt");
+        setFieldErrors({});
+
+        if(!json.ok){
+        setFormError(json.error.message);
+        setFieldErrors(json.error.fieldErrors);
+        }
+
         setSubmitting(false);
         return;
       }
