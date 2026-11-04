@@ -59,6 +59,7 @@ export default async function ProduceEditPage({ ctx, params }: RequestInfo) {
             unit: dto.unit,
             pickupDeadline: dto.pickupDeadline,
             pickedUp: dto.pickedUp,
+            contactInfo: dto.contactInfo,
           }}
         />
 

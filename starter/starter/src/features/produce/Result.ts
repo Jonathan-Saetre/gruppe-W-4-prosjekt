@@ -12,6 +12,18 @@ export type ResultParams = {
     }
 }
 
+export type ResultId = {
+    ok: true,
+    data: Produce;
+} | {
+    ok: false;
+    error: {
+        code: string;
+        message: string;
+        fieldErrors: Record<string, string[]>
+    }
+}
+
 export type Result = {
     ok: true,
     data: any,
