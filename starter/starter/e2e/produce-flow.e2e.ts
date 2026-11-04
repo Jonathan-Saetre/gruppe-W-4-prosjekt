@@ -53,9 +53,10 @@ test.describe("Hovedflyt: Registrer, logg inn og legg ut råvare", () => {
     // 4. Send inn
     await submitButton.click();
 
-    // 5. Vent på at vi blir sendt til detaljsiden
+    // 5. Vent på at vi blir sendt til detaljsiden (som IKKE er /produce/new)
+    // (?!new$) sørger for at vi ikke ved et uhell matcher /produce/new
     try {
-      await page.waitForURL(/\/produce\/[a-zA-Z0-9_-]+$/, { timeout: 10000 });
+      await page.waitForURL(/\/produce\/(?!new$)[a-zA-Z0-9_-]+$/, { timeout: 10000 });
     } catch {
       const alert = page.locator('[role="alert"]');
       if ((await alert.count()) > 0) {
@@ -65,12 +66,27 @@ test.describe("Hovedflyt: Registrer, logg inn og legg ut råvare", () => {
       throw new Error("Innsending feilet uten feilmelding i skjema.");
     }
 
+    // Sjekker at detaljsiden faktisk viser tittelen vår før vi henter URL-en
     await expect(page.locator("h1")).toContainText(uniqueTitle);
+
+    // Henter ut ID-en fra URL-en (f.eks. http://localhost:5173/produce/abc-123 -> abc-123)
+    const detailUrl = page.url();
+    const produceId = detailUrl.split("/").pop();
+    console.log(`→ Nytt innlegg opprettet med ID: ${produceId}`);
 
     // 6. Gå tilbake til forsiden og sjekk at det ligger i listen
     await page.goto("/");
     // Bruker .first() for å unngå strict mode-feil dersom samme tittel
     // skulle dukke opp flere steder i DOM-en
     await expect(page.getByText(uniqueTitle).first()).toBeVisible();
+
+    // 7. Opprydding: Slett innlegget vi lagde, slik at databasen ikke fylles opp
+    console.log(`→ Sletter testinnlegg med ID: ${produceId}`);
+    
+    // Playwright sitt page.request husker innloggings-cookien fra nettleseren
+    const deleteResponse = await page.request.delete(`/api/v1/produce/${produceId}`);
+    
+    // Forventer 204 No Content, som dere har definert i Controlleren
+    expect(deleteResponse.status()).toBe(204);
   });
 });
