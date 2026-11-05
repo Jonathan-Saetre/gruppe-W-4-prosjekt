@@ -1,26 +1,23 @@
 # gruppe W-4 prosjekt
-1. Gå inn i starter/starter mappen
-2. Installer avhengigheter
+Alle kommandoer kjøres i mappa "starter/starter"
+1. Installer avhengigheter
 kjør:npm install
-    
-1. Start utviklingsserveren
-2. Start opp en ny terminal i samme mappe
-3. Kjør databasemigrering
+
+2. Kjør databasemigrering
 kjør:npm run migrate:dev
-4. Kjør genereingen: npm run generate
+3. Kjør genereringen: npm run generate
     
-5. Legg inn seed
+4. Legg inn seed
 kjør:npm run seed
     
-6. Start opp applikasjonen
+5. Start opp applikasjonen
 kjør:npm run dev
 
-7. instaler npx playwright
+Testing
+1. kjør:npm run test
+2. installer npx playwright - bare første gang
 kjør:npx playwright install
-
-8. Testing
-kjør:npm run test
-2. e2e test
+3. e2e test
 kjør:npm run test:e2e
 
 
@@ -34,6 +31,6 @@ Oppbygging av appen:
 Home viser oversikten over annonser gjennom ProduceList og ProduceCard. Innlogging og registrering håndteres av Login- og Register-komponentene. Hoveddelen av applikasjonen følger en trelagsstruktur i features-mappen: produce-controller håndterer HTTP-forespørsler, produce-service tar seg av validering og forretningslogikk, og produce-repository håndterer kommunikasjonen med databasen. Produce-router ligger også inni feature mappen. Databaseoppsettet ligger i db-mappen, mens lib inneholder logikken for innlogging og registrering. Komponentene ligger i src, og pages ligger i app.
 
 Teknisk valg:
-Cloudflare R2 som skylagring tjeneste
-Trelagsstruktur: Controller, respository og service
-Drizzle ORM som db
+Cloudflare R2 som skylagringtjeneste for bilder
+Trelagsstruktur: Controller, repository og service
+Cloudflare D1 (SQLite) som database, med Drizzle som ORM.
