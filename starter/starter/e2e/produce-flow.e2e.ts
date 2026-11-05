@@ -22,6 +22,8 @@ test.describe("Hovedflyt: Registrer, logg inn og legg ut råvare", () => {
 
     // 1. Registrer en ny bruker
     await page.goto("/register");
+    // Vent til siden er ferdig lastet og skjemaet er klar
+    await page.waitForLoadState("networkidle");
     await page.fill('input[name="name"]', "Testbruker");
     await page.fill('input[name="email"]', uniqueEmail);
     await page.fill('input[name="password"]', "Passord123!");
