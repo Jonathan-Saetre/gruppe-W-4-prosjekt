@@ -33,6 +33,3 @@ Teknisk valg:
 Cloudflare R2 som skylagring tjeneste
 Trelagsstruktur: Controller, respository og service
 Drizzle ORM som db
-
-Hvordan starte opp testene:
-Men vi mangler hvordan starte opp testene. vil noen skrive inn det under? og legge det inni readme filen? Desverre har jeg ikke hatt mye tid på å lære meg mye om testing så vet ikke hvordan det fungere. Skal lese meg mer opp på det før presentasjonen, for da får jeg mer tid til å lære meg hele applikasjonen mer grundig. 
