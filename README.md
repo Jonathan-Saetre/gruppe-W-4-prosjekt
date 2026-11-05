@@ -14,6 +14,9 @@ kjør:npm run seed
 1. Start opp applikasjonen
 kjør:npm run dev
 
+1. instaler npx playwright
+kjør:npx playwright install
+
 1. Testing
 kjør:npm run test
 2. e2e test
