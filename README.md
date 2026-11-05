@@ -7,17 +7,18 @@ kjør:npm install
 2. Start opp en ny terminal i samme mappe
 3. Kjør databasemigrering
 kjør:npm run migrate:dev
+4. Kjør genereingen: npm run generate
     
-1. Legg inn seed
+5. Legg inn seed
 kjør:npm run seed
     
-1. Start opp applikasjonen
+6. Start opp applikasjonen
 kjør:npm run dev
 
-1. instaler npx playwright
+7. instaler npx playwright
 kjør:npx playwright install
 
-1. Testing
+8. Testing
 kjør:npm run test
 2. e2e test
 kjør:npm run test:e2e
