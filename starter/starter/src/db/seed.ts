@@ -6,7 +6,7 @@
 // startet. Da slipper dere å lure på om feilen ligger i dataene.
 import { defineScript } from "rwsdk/worker";
 import { drizzle } from "drizzle-orm/d1";
-import { users, tasks, produce } from "./schema";
+import { users, produce } from "./schema";
 import { hashPassword } from "@/lib/password";
 
 
@@ -19,7 +19,7 @@ export const seedData = async (env: Env) => {
   const db = drizzle(env.DB);
 
   // Tøm først, så seed kan kjøres om igjen uten å doble alt.
-  await db.delete(tasks);
+ 
   await db.delete(produce);
   await db.delete(users);
 
@@ -27,7 +27,7 @@ export const seedData = async (env: Env) => {
   // derfor hashPassword er async og ikke noe vi gjør i render.
   const passwordHash = await hashPassword(TEST_PASSWORD);
 
-  // Brukerne må inn før oppgavene: fremmednøkkelen krever at brukeren finnes.
+  // Brukerne må inn før innleggene: fremmednøkkelen krever at brukeren finnes.
   // Databasen nekter hvis dere tar rekkefølgen feil, og det er en god ting.
   const [user] = await db
     .insert(users)
@@ -37,21 +37,6 @@ export const seedData = async (env: Env) => {
       passwordHash,
     })
     .returning();
-
-  await db.insert(tasks).values([
-    {
-      title: "Lese leksjonen før timen",
-      completed: true,
-      userId: user.id,
-      dueDate: new Date(Date.now() - 86_400_000),
-    },
-    {
-      title: "Sette opp prosjektet",
-      completed: false,
-      userId: user.id,
-      dueDate: new Date(Date.now() + 86_400_000),
-    },
-  ]);
 
   await db.insert(produce).values([
     {
