@@ -17,7 +17,7 @@ kjør:npm run dev
 1. Testing
 kjør:npm run test
 2. e2e test
-kjør npm run test:e2e
+kjør:npm run test:e2e
 
 
 Hva appen gjør:
